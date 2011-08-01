@@ -18,14 +18,14 @@
 #
 
 require 'rubygems'
-require 'rake/gempackagetask'
-require 'rake/rdoctask'
+require 'rubygems/package_task'
+require 'rdoc/task'
 
 GEM_NAME = "knife-acl"
 
 spec = eval(File.read("knife-acl.gemspec"))
 
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
 end
 
@@ -34,10 +34,10 @@ begin
 
   Rake::RDocTask.new do |rdoc|
     rdoc.title = "Chef Ruby API Documentation"
-    rdoc.main = "README.rdoc"
+    rdoc.main = "README.md"
     rdoc.options << '--fmt' << 'shtml' # explictly set shtml generator
     rdoc.template = 'direct' # lighter template
-    rdoc.rdoc_files.include("README.rdoc", "LICENSE", "lib/**/*.rb")
+    rdoc.rdoc_files.include("README.md", "LICENSE", "lib/**/*.rb")
     rdoc.rdoc_dir = "rdoc"
   end
 rescue LoadError
