@@ -21,7 +21,12 @@ You can use these commands to manage a read-only group.  To do so:
 
 # Installation
 
-Place all the `*.rb` files in `~/.chef/plugins/knife`.
+This knife plugin is packaged as a gem.  To install it, enter the
+following:
+
+    gem install knife-acl
+    # or if the gem has yet to be published to Rubygems
+    gem install knife-acl*.gem
 
 # Subcommands
 
