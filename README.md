@@ -16,8 +16,8 @@ You can use these commands to manage a read-only group.  To do so:
 3. For each user you wish to have read only access as defined by
    permissions given to the "read-only" group do the following:
 
-       knife group add read-only USER
-       knife group remove users USER
+       knife group add user read-only USER
+       knife group remove user users USER
 
 # Installation
 
@@ -43,7 +43,7 @@ are currently the correct way to add/remove users to/from groups in an
 org.
 
 This command created a local cache of the user to USAG mapping and is
-used by `knife group show`, `knife group add`, and `knife group
+used by `knife group show`, `knife group add user`, and `knife group
 remove`.
 
 ## knife group list
@@ -56,13 +56,13 @@ Show the details membership details for `GROUP`. If you have run
 `knife user map`, the user map file will be used to annotate USAGs so
 you can see what user they represent.
 
-## knife group add GROUP USER
+## knife group add user GROUP USER
 
 Add USER to GROUP.  Requires an up-to-date user map as created by
 `knife user map`.  The user's USAG will be added as a subgroup of
 GROUP.
 
-## knife group remove GROUP USER
+## knife group remove user GROUP USER
 
 Remove USER from GROUP. Requires an up-to-date user map as created by
 `knife user map`.  The user's USAG will be removed from the subgroups
