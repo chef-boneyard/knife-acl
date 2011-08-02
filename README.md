@@ -9,7 +9,9 @@ knife config for an org on Hosted Chef.
 You can use these commands to manage a read-only group.  To do so:
 
 1. Run `knife user map` to create/update a local user map file
-   `user-map.yaml`.
+   `user-map.yaml`:
+
+       knife user map
 
 2. In the webUI, create a group that will hold read-only users.
 
@@ -19,8 +21,9 @@ You can use these commands to manage a read-only group.  To do so:
        knife group add user read-only USER
        knife group remove user users USER
 
-When users are added to an org, they will be added to the users group
-which has more than read-only permissions.
+   This adds the user to the 'read-only' group and removes them from the
+   'users' group which has more permissions by default (users are
+   added to 'users' when added to an org).
 
 # Installation
 
@@ -29,7 +32,7 @@ following:
 
     gem install knife-acl
     # or if the gem has yet to be published to Rubygems
-    gem install knife-acl*.gem
+    gem install knife-acl-x.y.z.gem
 
 # Subcommands
 
