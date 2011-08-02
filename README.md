@@ -19,6 +19,9 @@ You can use these commands to manage a read-only group.  To do so:
        knife group add user read-only USER
        knife group remove user users USER
 
+When users are added to an org, they will be added to the users group
+which has more than read-only permissions.
+
 # Installation
 
 This knife plugin is packaged as a gem.  To install it, enter the
