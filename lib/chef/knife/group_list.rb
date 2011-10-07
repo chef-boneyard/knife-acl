@@ -21,14 +21,19 @@ module OpscodeAcl
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
     banner "knife group list"
     
-    deps do
-      require 'pp'
-    end
-
     def run
       chef_rest = Chef::REST.new(Chef::Config[:chef_server_url])
       groups = chef_rest.get_rest("groups").keys.sort
-      pp groups
+      
+      ui.output(remove_usags(groups))
+    end
+
+    def remove_usags(groups)
+      groups.select { |gname| !is_usag?(gname) }
+    end
+ 
+    def is_usag?(gname)
+      gname.length == 32 && gname =~ /^[0-9a-f]+$/
     end
   end
 end

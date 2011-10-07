@@ -22,7 +22,6 @@ module OpscodeAcl
     banner "knife group add actor GROUP ACTOR"
     attr_reader :actor_name, :group_name, :user_map, :clients
     deps do
-      require 'pp'
       require 'yaml'
     end
 
@@ -49,7 +48,6 @@ module OpscodeAcl
 
     def save_group(group)
       new_group = make_group_for_put(group)
-      pp :new_group => new_group
       @chef_rest.put_rest("groups/#{new_group["groupname"]}", new_group)
     end
 

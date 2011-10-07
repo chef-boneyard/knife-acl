@@ -49,8 +49,8 @@ module OpscodeAcl
       open("actor-map.yaml", "w") do |f|
         f.write({ :user_map => user_map, :clients => clients }.to_yaml)
       end
-      puts "Found %d users and %d clients" % [user_map.size, clients.size]
-      puts "wrote map to 'actor-map.yaml'"
+      ui.msg "Found %d users and %d clients" % [user_map[:users].size, clients.size]
+      ui.msg "wrote map to 'actor-map.yaml'"
     end
   end
 end

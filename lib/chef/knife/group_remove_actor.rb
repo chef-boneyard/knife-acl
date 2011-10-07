@@ -22,7 +22,6 @@ module OpscodeAcl
     banner "knife group remove actor GROUP ACTOR"
     attr_reader :actor_name, :group_name, :user_map, :clients    
     deps do
-      require 'pp'
       require 'yaml'
     end
 

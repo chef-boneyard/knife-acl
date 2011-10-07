@@ -39,7 +39,7 @@ module OpscodeAcl
       end
       chef_rest = Chef::REST.new(Chef::Config[:chef_server_url])
       group = chef_rest.get_rest("groups/#{group_name}")
-      pp annotate_usags(group)
+      ui.output(annotate_usags(group))
     end
 
     def annotate_usags(group)
