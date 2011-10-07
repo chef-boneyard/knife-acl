@@ -27,8 +27,8 @@ module OpscodeAcl
     end
 
     def run
-      @user_map = if ::File.exists?("user-map.yaml")
-                   YAML.load(IO.read("user-map.yaml"))
+      @user_map = if ::File.exists?("actor-map.yaml")
+                   YAML.load(IO.read("actor-map.yaml"))[:user_map]
                  else
                    {:users => {}, :usags => {}}
                  end

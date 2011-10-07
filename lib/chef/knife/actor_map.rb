@@ -17,12 +17,12 @@
 #
 
 module OpscodeAcl
-  class UserMap < Chef::Knife
+  class ActorMap < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife user map"
+    banner "knife actor map"
 
     # writes a yaml file to current working directly named
-    # 'user-map.yaml'
+    # 'actor-map.yaml'
     # group add/remove operations will read this file
     # 
     deps do
@@ -45,10 +45,12 @@ module OpscodeAcl
         end
         user_map
       end
-      open("user-map.yaml", "w") do |f|
-        f.write(user_map.to_yaml)
+      clients = chef_rest.get_rest("clients").keys.inject({}) { |h, c| h[c] = c; h }
+      open("actor-map.yaml", "w") do |f|
+        f.write({ :user_map => user_map, :clients => clients }.to_yaml)
       end
-      puts "wrote user map to 'user-map.yaml'"
+      puts "Found %d users and %d clients" % [user_map.size, clients.size]
+      puts "wrote map to 'actor-map.yaml'"
     end
   end
 end
