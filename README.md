@@ -77,5 +77,11 @@ Remove ACTOR from GROUP. Requires an up-to-date actor map as created by
 `knife actor map`.  The user's USAG will be removed from the subgroups
 of GROUP if ACTOR is a user.
 
+## TODO
 
-
+- Feature: create/delete groups
+- Feature: build group membership graph
+- Remove duplication in commands
+- Staleness detector for actor map
+- Improve error messages when actor map is missing
+- Don't save group if it will be a no-op
