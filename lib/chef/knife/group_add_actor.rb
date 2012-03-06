@@ -66,10 +66,11 @@ module OpscodeAcl
     end
 
     def maybe_add_actor(type, actors)
-      if @actor_type == type && !actors.include?(@actor_id)
-          actors << @actor_id
+      new_actors = actors.dup
+      if @actor_type == type && !new_actors.include?(@actor_id)
+          new_actors << @actor_id
       end
-      actors
+      new_actors
     end
 
     def find_actor_in_map
@@ -86,4 +87,3 @@ module OpscodeAcl
     end
   end
 end
-
