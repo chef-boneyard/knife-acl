@@ -77,6 +77,35 @@ Remove ACTOR from GROUP. Requires an up-to-date actor map as created by
 `knife actor map`.  The user's USAG will be removed from the subgroups
 of GROUP if ACTOR is a user.
 
+## knife acl show OBJECT
+
+Shows the ACL of the given OBJECT.
+
+`OBJECT` should be in the form of `OBJECT_TYPE[OBJECT_NAME]`.  Valid
+`OBJECT_TYPE`'s are
+
+- clients
+- groups
+- containers
+- data
+- nodes
+- roles
+- cookbooks
+- environments
+
+
+## knife acl add OBJECT PERM [group|client] NAME
+
+Add the group or client with NAME to the PERM access control entry of
+OBJECT.  OBJECT should have the form specified in the `knife acl show`
+documentation above.
+
+## knife acl remove OBJECT PERM [group|client] NAME
+
+Remove group or client with NAME to the PERM access control entry of
+OBJECT.  OBJECT should have the form specified in the `knife acl show`
+documentation above.
+
 ## TODO
 
 - Feature: create/delete groups
