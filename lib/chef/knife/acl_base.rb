@@ -19,42 +19,66 @@
 module OpscodeAcl
   module AclBase
 
+    PERM_TYPES = %w(create read update delete grant)
+    ACTOR_TYPES = %w(client group)
     OBJECT_TYPES = %w(clients groups containers data nodes roles cookbooks sandboxes environments)
     OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/
 
-    def parse_object_name(object_name)
-      if m = object_name.match('(.*)\[(.*)\]')
-        type = m[1]
-        name = m[2]
-
-        if ! OBJECT_TYPES.include?(type)
-          ui.fatal "Unknown object type: #{type}"
-          exit 1
-        end
-
-        if ! OBJECT_NAME_SPEC.match(name)
-          ui.fatal "Invalid object name: #{name}"
-          exit 1
-        end
-
-        {'type' => type, 'name' => name}
-      else
-        ui.fatal "Could not parse OBJECT.  It should have the form OBJECT_TYPE[OBJECT_NAME]"
+    def validate_object_type!(type)
+      if ! OBJECT_TYPES.include?(type)
+        ui.fatal "Unknown object type \"#{type}\".  The following types are permitted: #{OBJECT_TYPES.join(', ')}"
         exit 1
       end
     end
 
-
-    def get_acl(object)
-      rest.get_rest("#{object['type']}/#{object['name']}/_acl")
+    def validate_object_name!(name)
+      if ! OBJECT_NAME_SPEC.match(name)
+        ui.fatal "Invalid name: #{name}"
+        exit 1
+      end
     end
 
-    def get_ace(object, perm)
-      get_acl(object)[perm]
+    def validate_actor_type!(type)
+      if ! ACTOR_TYPES.include?(type)
+        ui.fatal "Unknown actor type \"#{type}\". The following types are permitted: #{ACTOR_TYPES.join(', ')}"
+        exit 1
+      end
     end
 
-    def update_ace!(object, ace_type, ace)
-      rest.put_rest("#{object['type']}/#{object['name']}/_acl/#{ace_type}", ace_type => ace)
+    def validate_actor_name!(name)
+      # Same rules apply to object's and actors
+      validate_object_name!(name)
+    end
+
+    def validate_perm_type!(perm)
+      if ! PERM_TYPES.include?(perm)
+        ui.fatal "Invalid permission \"#{perm}\". The following permissions are permitted: #{PERM_TYPES.join(',')}"
+        exit 1
+      end
+
+    end
+
+    def validate_all_params!
+      # Helper method to valid parameters for commands that modify permisisons
+      # This assumes including class has the necessary accessors
+      # We the validation to ensure we can give the user more helpful error messages.
+      validate_perm_type!(perm)
+      validate_actor_type!(actor_type)
+      validate_actor_name!(actor_name)
+      validate_object_name!(object_name)
+      validate_object_type!(object_type)
+    end
+
+    def get_acl(object_type, object_name)
+      rest.get_rest("#{object_type}/#{object_name}/_acl")
+    end
+
+    def get_ace(object_type, object_name, perm)
+      get_acl(object_type, object_name)[perm]
+    end
+
+    def update_ace!(object_type, object_name, ace_type, ace)
+      rest.put_rest("#{object_type}/#{object_name}/_acl/#{ace_type}", ace_type => ace)
     end
 
   end

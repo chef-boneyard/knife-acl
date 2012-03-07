@@ -19,23 +19,24 @@
 module OpscodeAcl
   class AclShow < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife acl show OBJECT"
+    banner "knife acl show OBJECT_TYPE OBJECT_NAME"
 
     deps do
       include OpscodeAcl::AclBase
     end
 
     def run
-      object_name = name_args[0]
+      object_type, object_name = name_args
 
-      if ! object_name
+      if ! object_name || ! object_type
         show_usage
-        ui.fatal "You must specify an object"
+        ui.fatal "You must specify an object type and object name"
         exit 1
       end
 
-      object = parse_object_name(object_name)
-      acl = get_acl(object)
+      validate_object_type!(object_type)
+      validate_object_name!(object_name)
+      acl = get_acl(object_type, object_name)
       ui.output acl
     end
   end

@@ -77,12 +77,12 @@ Remove ACTOR from GROUP. Requires an up-to-date actor map as created by
 `knife actor map`.  The user's USAG will be removed from the subgroups
 of GROUP if ACTOR is a user.
 
-## knife acl show OBJECT
+## knife acl show OBJECT_TYPE OBJECT_NAME
 
-Shows the ACL of the given OBJECT.
+Shows the ACL for the specified object.  Objects are identified by the
+combination of their type and name.
 
-`OBJECT` should be in the form of `OBJECT_TYPE[OBJECT_NAME]`.  Valid
-`OBJECT_TYPE`'s are
+Valid `OBJECT_TYPE`'s are
 
 - clients
 - groups
@@ -93,18 +93,44 @@ Shows the ACL of the given OBJECT.
 - cookbooks
 - environments
 
+For example, use the following command to obtain the ACL for a node
+named "web.example.com":
 
-## knife acl add OBJECT PERM [group|client] NAME
+    knife acl show nodes web.example.com
+
+## knife acl add OBJECT_TYPE OBJECT_NAME PERM [group|client] NAME
 
 Add the group or client with NAME to the PERM access control entry of
-OBJECT.  OBJECT should have the form specified in the `knife acl show`
-documentation above.
+the object.  Objects are specified by the combination of
+their type and name.  See the `knife acl show` documentation above for
+the permitted types.
 
-## knife acl remove OBJECT PERM [group|client] NAME
+Valid `PERM`s are:
 
-Remove group or client with NAME to the PERM access control entry of
-OBJECT.  OBJECT should have the form specified in the `knife acl show`
-documentation above.
+- create
+- read
+- update
+- delete
+- grant
+
+For example, use the following command to give the superuser group
+the ability to delete the node called "api.example.com":
+
+    knife acl add node api.exmaple.com delete group superusers
+
+## knife acl remove OBJECT_TYPE OBJECT_NAME PERM [group|client] NAME
+
+Remove group or client with NAME from the PERM access control entry of
+the specified object.  Objects are specified by the combination of
+their type and name.  See the `knife acl show` documentation above for
+the permitted types.  See the `knife acl add` documentation abouve for
+the permitted `PERMS`s.
+
+For example, use the following command to remove the superuser group's
+ability to delete the node called "api.example.com":
+
+    knife acl add node api.exmaple.com delete group superusers
+
 
 ## TODO
 

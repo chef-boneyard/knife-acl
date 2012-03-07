@@ -19,40 +19,36 @@
 module OpscodeAcl
   class AclAdd < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife acl add OBJECT PERM [group|client] NAME"
+    banner "knife acl add OBJECT_TYPE OBJECT_NAME PERM [group|client] NAME"
+
+    attr_reader :object_type, :object_name, :perm, :actor_type, :actor_name
 
     deps do
       include OpscodeAcl::AclBase
     end
 
     def run
-      object_name, perm, actor_type, name = name_args
+      @object_type, @object_name, @perm, @actor_type, @actor_name = name_args
 
-      if name_args.length < 4
+      if name_args.length < 5
         show_usage
-        ui.fatal "You must specify the object, perm, actor type (client or group), and actor name"
+        ui.fatal "You must specify the object type, object name, perm, actor type (client or group), and actor name"
         exit 1
       end
 
-      if ! actor_type =~ /^group|client$/
-        ui.error "Only adding a group or client to object ACEs has been implemented"
-        exit 1
-      end
-
-      object = parse_object_name(object_name)
-
-      ace = get_ace(object, perm)
+      validate_all_params!
+      ace = get_ace(object_type, object_name, perm)
 
       case actor_type
       when "client"
-        add_actor_to_ace!(name, ace)
+        add_actor_to_ace!(actor_name, ace)
       when "group"
-        add_group_to_ace!(name, ace)
+        add_group_to_ace!(actor_name, ace)
       when "users"
         # Not Implemented yet, we shouldn't get here.
       end
 
-      update_ace!(object, perm, ace)
+      update_ace!(object_type, object_name, perm, ace)
     end
 
     def add_group_to_ace!(name, ace)
