@@ -129,7 +129,7 @@ the permitted `PERMS`s.
 For example, use the following command to remove the superuser group's
 ability to delete the node called "api.example.com":
 
-    knife acl add node api.exmaple.com delete group superusers
+    knife acl remove node api.exmaple.com delete group superusers
 
 
 ## TODO
