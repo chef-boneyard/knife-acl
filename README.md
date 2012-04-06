@@ -77,6 +77,61 @@ Remove ACTOR from GROUP. Requires an up-to-date actor map as created by
 `knife actor map`.  The user's USAG will be removed from the subgroups
 of GROUP if ACTOR is a user.
 
+## knife acl show OBJECT_TYPE OBJECT_NAME
+
+Shows the ACL for the specified object.  Objects are identified by the
+combination of their type and name.
+
+Valid `OBJECT_TYPE`'s are
+
+- clients
+- groups
+- containers
+- data
+- nodes
+- roles
+- cookbooks
+- environments
+
+For example, use the following command to obtain the ACL for a node
+named "web.example.com":
+
+    knife acl show nodes web.example.com
+
+## knife acl add OBJECT_TYPE OBJECT_NAME PERM [group|client] NAME
+
+Add the group or client with NAME to the PERM access control entry of
+the object.  Objects are specified by the combination of
+their type and name.  See the `knife acl show` documentation above for
+the permitted types.
+
+Valid `PERM`s are:
+
+- create
+- read
+- update
+- delete
+- grant
+
+For example, use the following command to give the superuser group
+the ability to delete the node called "api.example.com":
+
+    knife acl add node api.exmaple.com delete group superusers
+
+## knife acl remove OBJECT_TYPE OBJECT_NAME PERM [group|client] NAME
+
+Remove group or client with NAME from the PERM access control entry of
+the specified object.  Objects are specified by the combination of
+their type and name.  See the `knife acl show` documentation above for
+the permitted types.  See the `knife acl add` documentation abouve for
+the permitted `PERMS`s.
+
+For example, use the following command to remove the superuser group's
+ability to delete the node called "api.example.com":
+
+    knife acl remove node api.exmaple.com delete group superusers
+
+
 ## TODO
 
 - Feature: create/delete groups
