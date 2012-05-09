@@ -20,7 +20,7 @@ module OpscodeAcl
   class GroupRemoveActor < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
     banner "knife group remove actor GROUP ACTOR"
-    attr_reader :actor_name, :group_name, :user_map, :clients    
+    attr_reader :actor_name, :group_name, :user_map, :clients
     deps do
       require 'yaml'
     end
@@ -62,9 +62,9 @@ module OpscodeAcl
         "groupname" => existing_group["groupname"],
         "orgname" => existing_group["orgname"],
         "actors" => {
-          "clients" => existing_group["actors"],
+          "clients" => existing_group["clients"],
           "groups" => existing_group["groups"],
-          "users" => existing_group["actors"]
+          "users" => existing_group["users"]
         }
       }
     end
@@ -83,4 +83,3 @@ module OpscodeAcl
     end
   end
 end
-
