@@ -58,7 +58,7 @@ module OpscodeAcl
         "actors" => {
           # users are added to groups via the user's USAG so we never
           # modify the users directly
-          "users" => existing_group["actors"],
+          "users" => existing_group["users"],
           "clients" => maybe_add_actor(:client, existing_group["actors"]),
           "groups" => maybe_add_actor(:user, existing_group["groups"])
         }
