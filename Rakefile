@@ -19,7 +19,6 @@
 
 require 'rubygems'
 require 'rubygems/package_task'
-require 'rdoc/task'
 
 GEM_NAME = "knife-acl"
 
@@ -27,21 +26,6 @@ spec = eval(File.read("knife-acl.gemspec"))
 
 Gem::PackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
-end
-
-begin
-  require 'sdoc'
-
-  Rake::RDocTask.new do |rdoc|
-    rdoc.title = "Chef Ruby API Documentation"
-    rdoc.main = "README.md"
-    rdoc.options << '--fmt' << 'shtml' # explictly set shtml generator
-    rdoc.template = 'direct' # lighter template
-    rdoc.rdoc_files.include("README.md", "LICENSE", "lib/**/*.rb")
-    rdoc.rdoc_dir = "rdoc"
-  end
-rescue LoadError
-  puts "sdoc is not available. (sudo) gem install sdoc to generate rdoc documentation."
 end
 
 task :install => :package do
