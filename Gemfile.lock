@@ -1,0 +1,11 @@
+GEM
+  specs:
+    rake (10.0.0)
+    rdoc (2.4.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rake
+  rdoc (= 2.4.3)
