@@ -29,7 +29,7 @@ module OpscodeAcl
         exit 1
       end
 
-      users = name_args[0]
+      users = name_args
       api_endpoint = "association_requests/"
       users.each do |u|
         body = {:user => u}
