@@ -58,24 +58,30 @@ module OpscodeAcl
         "actors" => {
           # users are added to groups via the user's USAG so we never
           # modify the users directly
-          "users" => existing_group["users"],
-          "clients" => maybe_add_actor(:client, existing_group["actors"]),
-          "groups" => maybe_add_actor(:user, existing_group["groups"])
+          "users" => maybe_add_actor(:user, existing_group["users"]),
+          "clients" => maybe_add_actor(:client, existing_group["clients"]),
+          "groups" => maybe_add_actor(:group, existing_group["groups"])
         }
       }
     end
 
     def maybe_add_actor(type, actors)
       new_actors = actors.dup
-      if @actor_type == type && !new_actors.include?(@actor_id)
-          new_actors << @actor_id
+      if @actor_type == :user
+        if @actor_type == type && !new_actors.include?(@actor_name)
+            new_actors << @actor_name
+        end
+      else
+        if @actor_type == type && !new_actors.include?(@actor_id)
+            new_actors << @actor_id
+        end
       end
       new_actors
     end
 
     def find_actor_in_map
-      @actor_type, @actor_id = if user_map[:users][actor_name]
-                                 [:user, user_map[:users][actor_name]]
+      @actor_type, @actor_id, @actor_name = if user_map[:users][actor_name]
+                                 [:user, user_map[:users][actor_name], actor_name]
                                else
                                  [:client, clients[actor_name]]
                                end
