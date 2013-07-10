@@ -46,6 +46,7 @@ module OpscodeAcl
       case @actor_type
       when :user
         group["groups"].delete(@actor_id)
+        group["users"].delete(actor_name)
       when :client
         group["actors"].delete(@actor_id)
       end
