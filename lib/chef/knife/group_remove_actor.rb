@@ -47,7 +47,7 @@ module OpscodeAcl
       when :user
         group["groups"].delete(@actor_id)
       when :client
-        group["actors"].delete(@actor_id)
+        group["clients"].delete(@actor_id)
       end
       save_group(group)
     end
