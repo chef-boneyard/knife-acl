@@ -30,9 +30,18 @@ You can use these commands to manage a read-only group.  To do so:
 This knife plugin is packaged as a gem.  To install it, enter the
 following:
 
+#### Gem installed chef-client on a workstation
     gem install knife-acl
+
     # or if the gem has yet to be published to Rubygems
+    gem build knife-acl.gemspec
     gem install knife-acl-x.y.z.gem
+
+#### Opscode hosted Enterprise Chef (OHC) with an Omnibus-installed chef-client on a workstation
+/opt/chef/embedded/bin/gem install knife-acl
+
+#### Opscode Enterprise Chef (OPC) Directly on the active backend
+as root: /opt/opscode/embedded/bin/gem install knife-acl
 
 # Subcommands
 
@@ -140,3 +149,27 @@ ability to delete the node called "api.example.com":
 - Staleness detector for actor map
 - Improve error messages when actor map is missing
 - Don't save group if it will be a no-op
+
+## LICENSE
+
+Unless otherwise specified all works in this repository are
+
+Copyright 2013 Opscode, Inc
+
+||| 
+| ------------- |-------------:|
+| Author      |Seth Falcon (seth@opscode.com)|
+| Copyright  |Copyright (c) 2013 Opscode, Inc.|
+| License     |Apache License, Version 2.0|
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

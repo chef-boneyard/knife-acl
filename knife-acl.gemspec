@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = s.summary
   s.author = "Seth Falcon"
   s.email = "seth@opscode.com"
-  s.homepage = "http://wiki.opscode.com/display/chef"
+  s.homepage = "http://docs.opscode.com"
   s.require_path = 'lib'
   s.files = %w(LICENSE README.md) + Dir.glob("lib/**/*")
 end
