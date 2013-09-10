@@ -11,15 +11,15 @@ You can use these commands to manage a read-only group.  To do so:
 1. Run `knife actor map` to create/update a local actor map file
    `actor-map.yaml`:
 
-       knife actor map
+        knife actor map
 
 2. In the webUI, create a group that will hold read-only users.
 
 3. For each user you wish to have read only access as defined by
    permissions given to the "read-only" group do the following:
 
-       knife group add actor read-only USER
-       knife group remove actor users USER
+        knife group add actor read-only USER
+        knife group remove actor users USER
 
    This adds the user to the 'read-only' group and removes them from the
    'users' group which has more permissions by default (users are
