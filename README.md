@@ -6,6 +6,45 @@ This is an UNOFFICIAL and EXPERIMENTAL knife plugin to support basic
 user/group operations for Hosted Chef. All commands assume a working
 knife config for an org on Hosted Chef.
 
+# USAGs
+
+Each user is automatically made a member of a unique USAG when they
+are associated to an organization.
+
+The intent is that these USAGs are then made to be members of normal
+groups such as "Users" or other custom named groups such as "read-only".
+
+If a user is dissociated from an organization then the user only needs
+to be removed from the USAG to ensure the user no longer has any
+permissions within the organization.
+
+USAGs and their membership within other normal groups are not visible
+from within the management console's web interface.
+
+USAGs are an implementation detail that will likely be hidden or otherwise
+changed in the future.  USAGs are currently the correct way to
+add/remove users to/from groups in an org.
+
+## No longer manage group membership with the web interface
+
+**Be warned**, once you start managing a group's membership using `knife-acl`
+you should **avoid managing that group's membership using the [management
+console's web interface](https://manage.opscode.com)**.
+
+Even if you haven't made any changes to a group's membership in the web
+interface but you click "Save Group" all USAGs will be removed from the group
+erasing any `knife-acl` work that was done on the group.
+
+To complicate things further the "Users" group is a special group.
+
+When a user is associated with an organization that user's USAG is automatically
+made a member of the "Users" group.  You can remove USAGs using `knife-acl`
+but if you click on "Save Group" in the web interface all USAG's in the
+organization would be added back to the "Users" group erasing any `knife-acl`
+work that was done on the "Users" group.
+
+# Example: Manage a read-only Group
+
 You can use these commands to manage a read-only group.  To do so:
 
 1. Run `knife actor map` to create/update a local actor map file
@@ -33,10 +72,6 @@ following:
 #### Gem installed chef-client on a workstation
     gem install knife-acl
 
-    # or if the gem has yet to be published to Rubygems
-    gem build knife-acl.gemspec
-    gem install knife-acl-x.y.z.gem
-
 #### Opscode hosted Enterprise Chef (OHC) with an Omnibus-installed chef-client on a workstation
 /opt/chef/embedded/bin/gem install knife-acl
 
@@ -52,10 +87,7 @@ Show a list of users associated with your org
 ## knife actor map
 
 Create a local map file actor-map.yaml" that maps users to their User
-Specific Association Group (USAG) and stores a list of clients.  USAGs
-are an implementation detail that will likely be hidden or otherwise
-change in the future.  USAGs are currently the correct way to
-add/remove users to/from groups in an org.
+Specific Association Group (USAG) and stores a list of clients.
 
 This command creates a local cache of the user to USAG mapping as well
 as a local cache of clients and is used by the following commands:
