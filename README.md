@@ -4,44 +4,44 @@
 
 This is an UNOFFICIAL and EXPERIMENTAL knife plugin to support basic
 user/group operations for Hosted Chef. All commands assume a working
-knife config for an org on Hosted Chef.
+knife configuration for an organization on Enterprise Chef.
 
 # User Specific Association Group
 
-Each user is automatically made a member of a unique User Specific
-Association Group (USAG) when they are associated to an organization.
+User Specific Association Groups (USAGs) are a mechanism to grant access to
+organization objects to users such that it is possible to quickly revoke the
+access without touching all objects in the organization.
 
-The intent is that these USAGs are then made to be members of normal
-groups such as "Users" or other custom named groups such as "read-only".
+Each USAG contains a single user. The USAG is then added to other groups or
+directly to the ACLs of an object as needed.
 
-If a user is dissociated from an organization then the user only needs
-to be removed from the USAG to ensure the user no longer has any
-permissions within the organization.
+When the user is dissociated from an organization only the user's USAG needs to
+be deleted thereby quickly revoking access to all objects in the organization.
 
-USAGs and their membership within other normal groups are not visible
-from within the management console's web interface.
+USAGs and their membership within other normal groups are not visible in the
+current [management console's web interface](https://manage.opscode.com).
 
-USAGs are an implementation detail that will likely be hidden or otherwise
-changed in the future.  USAGs are currently the correct way to
-add/remove users to/from groups in an org.
+### STOP managing group membership with the web interface
 
-### Stop managing group membership with the web interface
+USAGs are currently the correct way to add/remove users to/from groups in an
+organization.
 
 **Be warned**, once you start managing a group's membership using `knife-acl`
 you should **avoid managing that group's membership using the [management
 console's web interface](https://manage.opscode.com)**.
 
-Even if you haven't made any changes to a group's membership in the web
-interface but you click "Save Group" all USAGs will be removed from the group
-erasing any `knife-acl` work that was done on the group.
+You can add USAGs to a group using `knife-acl` but if you click "Save Group" in
+the web interface then all USAGs will be removed from the group erasing any
+`knife-acl` work that was done on the group. This will happen even if no
+changes were made to the group's members in the web interface.
 
-To complicate things further the "Users" group is a special group.
-
-When a user is associated with an organization that user's USAG is automatically
-made a member of the "Users" group.  You can remove USAGs using `knife-acl`
-but if you click on "Save Group" in the web interface all USAG's in the
-organization would be added back to the "Users" group erasing any `knife-acl`
-work that was done on the "Users" group.
+The "Users" group is a special group. When a user is associated with an
+organization the user's USAG is automatically made a member of the
+"Users" group. You can remove USAGs from the "Users" group using `knife-acl`
+but if you click "Save Group" in the web interface then all USAGs in the
+organization will be added back to the "Users" group erasing any `knife-acl`
+work that was done on the "Users" group. This will happen even if no changes
+were made to the group's members in the web interface.
 
 # Example: Manage a read-only Group
 
