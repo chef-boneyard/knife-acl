@@ -6,10 +6,10 @@ This is an UNOFFICIAL and EXPERIMENTAL knife plugin to support basic
 user/group operations for Hosted Chef. All commands assume a working
 knife config for an org on Hosted Chef.
 
-# USAGs
+# User Specific Association Group
 
-Each user is automatically made a member of a unique USAG when they
-are associated to an organization.
+Each user is automatically made a member of a unique User Specific
+Association Group (USAG) when they are associated to an organization.
 
 The intent is that these USAGs are then made to be members of normal
 groups such as "Users" or other custom named groups such as "read-only".
@@ -25,7 +25,7 @@ USAGs are an implementation detail that will likely be hidden or otherwise
 changed in the future.  USAGs are currently the correct way to
 add/remove users to/from groups in an org.
 
-## No longer manage group membership with the web interface
+### Stop managing group membership with the web interface
 
 **Be warned**, once you start managing a group's membership using `knife-acl`
 you should **avoid managing that group's membership using the [management
@@ -86,8 +86,8 @@ Show a list of users associated with your org
 
 ## knife actor map
 
-Create a local map file actor-map.yaml" that maps users to their User
-Specific Association Group (USAG) and stores a list of clients.
+Create a local map file actor-map.yaml" that maps users to their USAG
+and stores a list of clients.
 
 This command creates a local cache of the user to USAG mapping as well
 as a local cache of clients and is used by the following commands:
