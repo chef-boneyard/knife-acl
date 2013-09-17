@@ -2,8 +2,8 @@
 
 # Description
 
-This is an UNOFFICIAL and EXPERIMENTAL knife plugin to support basic
-user/group operations for Hosted Chef. All commands assume a working
+This is an Opscode supported knife plugin which provides some user/group
+ACL operations for Enterprise Chef. All commands assume a working
 knife configuration for an organization on Enterprise Chef.
 
 # User Specific Association Group
