@@ -70,7 +70,10 @@ module OpscodeAcl
     end
 
     def get_acl(object_type, object_name)
-      rest.get_rest("#{object_type}/#{object_name}/_acl")
+      object_name = nil if object_name == "any"
+      url = [object_type, object_name, "_acl"].compact.join "/"
+
+      rest.get_rest(url)
     end
 
     def get_ace(object_type, object_name, perm)
@@ -78,7 +81,10 @@ module OpscodeAcl
     end
 
     def update_ace!(object_type, object_name, ace_type, ace)
-      rest.put_rest("#{object_type}/#{object_name}/_acl/#{ace_type}", ace_type => ace)
+      object_name = nil if object_name == "any"
+      url = [object_type, object_name, "_acl", ace_type].compact.join "/"
+
+      rest.put_rest(url, ace_type => ace)
     end
 
   end
