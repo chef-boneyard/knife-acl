@@ -52,7 +52,9 @@ You can use these commands to manage a read-only group.  To do so:
 
         knife actor map
 
-2. In the webUI, create a group that will hold read-only users.
+2. Create a group that will hold read-only users:
+
+        knife group create read-only
 
 3. For each user you wish to have read only access as defined by
    permissions given to the "read-only" group do the following:
@@ -94,6 +96,10 @@ as a local cache of clients and is used by the following commands:
 - `knife group show`,
 - `knife group add actor`, and
 - `knife group remove actor`.
+
+## knife group create
+
+Create a new group.
 
 ## knife group list
 
