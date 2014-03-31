@@ -124,6 +124,11 @@ Remove ACTOR from GROUP. Requires an up-to-date actor map as created by
 `knife actor map`.  The user's USAG will be removed from the subgroups
 of GROUP if ACTOR is a user.
 
+## knife group destroy GROUP
+
+Removes `GROUP` from the organization.  All members of the group (both
+actors and groups) remain in the system, only `GROUP` is removed.
+
 ## knife acl show OBJECT_TYPE OBJECT_NAME
 
 Shows the ACL for the specified object.  Objects are identified by the
@@ -181,7 +186,6 @@ ability to delete the node called "api.example.com":
 
 ## TODO
 
-- Feature: create/delete groups
 - Feature: build group membership graph
 - Remove duplication in commands
 - Staleness detector for actor map
