@@ -1,6 +1,6 @@
 #
 # Author:: Seth Falcon (<seth@opscode.com>)
-# Copyright:: Copyright 2011 Opscode, Inc.
+# Copyright:: Copyright 2011--2014 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,8 +31,7 @@ module OpscodeAcl
         ui.error "must specify a group name"
         exit 1
       end
-      chef_rest = Chef::REST.new(Chef::Config[:chef_server_url])
-      group = chef_rest.post_rest("groups", {:groupname => group_name})
+      group = rest.post_rest("groups", {:groupname => group_name})
       ui.output group
     end
   end
