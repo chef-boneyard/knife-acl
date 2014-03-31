@@ -31,8 +31,7 @@ module OpscodeAcl
         ui.error "must specify a group name"
         exit 1
       end
-      chef_rest = Chef::REST.new(Chef::Config[:chef_server_url])
-      group = chef_rest.post_rest("groups", {:groupname => group_name})
+      group = rest.post_rest("groups", {:groupname => group_name})
       ui.output group
     end
   end

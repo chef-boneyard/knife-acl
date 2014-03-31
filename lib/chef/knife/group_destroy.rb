@@ -31,8 +31,7 @@ module OpscodeAcl
         ui.error "must specify a group name"
         exit 1
       end
-      chef_rest = Chef::REST.new(Chef::Config[:chef_server_url])
-      result = chef_rest.delete_rest("groups/#{group_name}")
+      result = rest.delete_rest("groups/#{group_name}")
       ui.output result
     end
   end
