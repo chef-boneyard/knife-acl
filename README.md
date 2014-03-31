@@ -52,7 +52,9 @@ You can use these commands to manage a read-only group.  To do so:
 
         knife actor map
 
-2. In the webUI, create a group that will hold read-only users.
+2. Create a group that will hold read-only users:
+
+        knife group create read-only
 
 3. For each user you wish to have read only access as defined by
    permissions given to the "read-only" group do the following:
@@ -95,6 +97,10 @@ as a local cache of clients and is used by the following commands:
 - `knife group add actor`, and
 - `knife group remove actor`.
 
+## knife group create
+
+Create a new group.
+
 ## knife group list
 
 List groups in the org.
@@ -117,6 +123,11 @@ is a user.
 Remove ACTOR from GROUP. Requires an up-to-date actor map as created by
 `knife actor map`.  The user's USAG will be removed from the subgroups
 of GROUP if ACTOR is a user.
+
+## knife group destroy GROUP
+
+Removes `GROUP` from the organization.  All members of the group (both
+actors and groups) remain in the system, only `GROUP` is removed.
 
 ## knife acl show OBJECT_TYPE OBJECT_NAME
 
@@ -175,7 +186,6 @@ ability to delete the node called "api.example.com":
 
 ## TODO
 
-- Feature: create/delete groups
 - Feature: build group membership graph
 - Remove duplication in commands
 - Staleness detector for actor map
@@ -186,12 +196,12 @@ ability to delete the node called "api.example.com":
 
 Unless otherwise specified all works in this repository are
 
-Copyright 2013 Opscode, Inc
+Copyright 2013--2014 Chef Software, Inc.
 
-||| 
+|||
 | ------------- |-------------:|
 | Author      |Seth Falcon (seth@opscode.com)|
-| Copyright  |Copyright (c) 2013 Opscode, Inc.|
+| Copyright  |Copyright (c) 2013--2014 Chef Software, Inc.|
 | License     |Apache License, Version 2.0|
 
 Licensed under the Apache License, Version 2.0 (the "License");

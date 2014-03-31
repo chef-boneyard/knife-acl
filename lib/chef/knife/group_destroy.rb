@@ -1,6 +1,6 @@
 #
-# Author:: Seth Falcon (<seth@opscode.com>)
-# Copyright:: Copyright 2011--2014 Chef Software, Inc.
+# Author:: Christopher Maier (<cm@opscode.com>)
+# Copyright:: Copyright 2014 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,19 +17,22 @@
 #
 
 module OpscodeAcl
-  class UserList < Chef::Knife
+  class GroupDestroy < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife user list"
-    
+    banner "knife group destroy GROUP"
+
     deps do
-      require 'pp'
+      require 'yaml'
     end
 
     def run
-      chef_rest = Chef::REST.new(Chef::Config[:chef_server_url])
-      users = chef_rest.get_rest("users").map { |u| u["user"]["username"] }
-      pp users.sort
+      group_name = name_args[0]
+      if !group_name || group_name.empty?
+        ui.error "must specify a group name"
+        exit 1
+      end
+      result = rest.delete_rest("groups/#{group_name}")
+      ui.output result
     end
   end
 end
-
