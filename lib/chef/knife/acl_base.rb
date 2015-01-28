@@ -20,7 +20,7 @@ module OpscodeAcl
   module AclBase
 
     PERM_TYPES = %w(create read update delete grant)
-    ACTOR_TYPES = %w(client group)
+    ACTOR_TYPES = %w(client group user)
     OBJECT_TYPES = %w(clients groups containers data nodes roles cookbooks environments)
     OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/
 
@@ -46,27 +46,40 @@ module OpscodeAcl
     end
 
     def validate_actor_name!(name)
-      # Same rules apply to object's and actors
+      # Same rules apply to objects and actors
       validate_object_name!(name)
     end
 
-    def validate_perm_type!(perm)
-      if ! PERM_TYPES.include?(perm)
-        ui.fatal "Invalid permission \"#{perm}\". The following permissions are permitted: #{PERM_TYPES.join(',')}"
-        exit 1
+    def validate_perm_type!(perms)
+      perms.split(',').each do |perm|
+        if ! PERM_TYPES.include?(perm)
+          ui.fatal "Invalid permission \"#{perm}\". The following permissions are permitted: #{PERM_TYPES.join(',')}"
+          exit 1
+        end
       end
-
     end
 
     def validate_all_params!
       # Helper method to valid parameters for commands that modify permisisons
       # This assumes including class has the necessary accessors
       # We the validation to ensure we can give the user more helpful error messages.
-      validate_perm_type!(perm)
+      validate_perm_type!(perms)
       validate_actor_type!(actor_type)
       validate_actor_name!(actor_name)
       validate_object_name!(object_name)
       validate_object_type!(object_type)
+    end
+
+    def validate_actor_exists!(actor_type, actor_name)
+      begin
+        true if rest.get_rest("#{actor_type}s/#{actor_name}")
+      rescue NameError
+        # ignore "NameError: uninitialized constant Chef::ApiClient" when finding a client
+        true
+      rescue
+        ui.fatal "#{actor_type} '#{actor_name}' does not exist"
+        exit 1
+      end
     end
 
     def get_acl(object_type, object_name)
@@ -75,6 +88,44 @@ module OpscodeAcl
 
     def get_ace(object_type, object_name, perm)
       get_acl(object_type, object_name)[perm]
+    end
+
+    def add_to_acl!(object_type, object_name, actor_type, actor_name, perms)
+      acl = get_acl(object_type, object_name)
+      perms.split(',').each do |perm|
+        ui.msg "Adding '#{actor_name}' to '#{perm}' ACE of '#{object_name}'"
+        ace = acl[perm]
+
+        case actor_type
+        when "client", "user"
+          next if ace['actors'].include?(actor_name)
+          ace['actors'] << actor_name
+        when "group"
+          next if ace['groups'].include?(actor_name)
+          ace['groups'] << actor_name
+        end
+
+        update_ace!(object_type, object_name, perm, ace)
+      end
+    end
+
+    def remove_from_acl!(object_type, object_name, actor_type, actor_name, perms)
+      acl = get_acl(object_type, object_name)
+      perms.split(',').each do |perm|
+        ui.msg "Removing '#{actor_name}' from '#{perm}' ACE of '#{object_name}'"
+        ace = acl[perm]
+
+        case actor_type
+        when "client", "user"
+          next unless ace['actors'].include?(actor_name)
+          ace['actors'].delete(actor_name)
+        when "group"
+          next unless ace['groups'].include?(actor_name)
+          ace['groups'].delete(actor_name)
+        end
+
+        update_ace!(object_type, object_name, perm, ace)
+      end
     end
 
     def update_ace!(object_type, object_name, ace_type, ace)
