@@ -20,7 +20,7 @@ module OpscodeAcl
   module AclBase
 
     PERM_TYPES = %w(create read update delete grant)
-    ACTOR_TYPES = %w(client group user)
+    MEMBER_TYPES = %w(client group user)
     OBJECT_TYPES = %w(clients groups containers data nodes roles cookbooks environments)
     OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/
 
@@ -38,15 +38,15 @@ module OpscodeAcl
       end
     end
 
-    def validate_actor_type!(type)
-      if ! ACTOR_TYPES.include?(type)
-        ui.fatal "Unknown actor type \"#{type}\". The following types are permitted: #{ACTOR_TYPES.join(', ')}"
+    def validate_member_type!(type)
+      if ! MEMBER_TYPES.include?(type)
+        ui.fatal "Unknown member type \"#{type}\". The following types are permitted: #{MEMBER_TYPES.join(', ')}"
         exit 1
       end
     end
 
-    def validate_actor_name!(name)
-      # Same rules apply to objects and actors
+    def validate_member_name!(name)
+      # Same rules apply to objects and members
       validate_object_name!(name)
     end
 
@@ -64,20 +64,20 @@ module OpscodeAcl
       # This assumes including class has the necessary accessors
       # We the validation to ensure we can give the user more helpful error messages.
       validate_perm_type!(perms)
-      validate_actor_type!(actor_type)
-      validate_actor_name!(actor_name)
+      validate_member_type!(member_type)
+      validate_member_name!(member_name)
       validate_object_name!(object_name)
       validate_object_type!(object_type)
     end
 
-    def validate_actor_exists!(actor_type, actor_name)
+    def validate_member_exists!(member_type, member_name)
       begin
-        true if rest.get_rest("#{actor_type}s/#{actor_name}")
+        true if rest.get_rest("#{member_type}s/#{member_name}")
       rescue NameError
         # ignore "NameError: uninitialized constant Chef::ApiClient" when finding a client
         true
       rescue
-        ui.fatal "#{actor_type} '#{actor_name}' does not exist"
+        ui.fatal "#{member_type} '#{member_name}' does not exist"
         exit 1
       end
     end
@@ -90,38 +90,38 @@ module OpscodeAcl
       get_acl(object_type, object_name)[perm]
     end
 
-    def add_to_acl!(object_type, object_name, actor_type, actor_name, perms)
+    def add_to_acl!(object_type, object_name, member_type, member_name, perms)
       acl = get_acl(object_type, object_name)
       perms.split(',').each do |perm|
-        ui.msg "Adding '#{actor_name}' to '#{perm}' ACE of '#{object_name}'"
+        ui.msg "Adding '#{member_name}' to '#{perm}' ACE of '#{object_name}'"
         ace = acl[perm]
 
-        case actor_type
+        case member_type
         when "client", "user"
-          next if ace['actors'].include?(actor_name)
-          ace['actors'] << actor_name
+          next if ace['actors'].include?(member_name)
+          ace['actors'] << member_name
         when "group"
-          next if ace['groups'].include?(actor_name)
-          ace['groups'] << actor_name
+          next if ace['groups'].include?(member_name)
+          ace['groups'] << member_name
         end
 
         update_ace!(object_type, object_name, perm, ace)
       end
     end
 
-    def remove_from_acl!(object_type, object_name, actor_type, actor_name, perms)
+    def remove_from_acl!(object_type, object_name, member_type, member_name, perms)
       acl = get_acl(object_type, object_name)
       perms.split(',').each do |perm|
-        ui.msg "Removing '#{actor_name}' from '#{perm}' ACE of '#{object_name}'"
+        ui.msg "Removing '#{member_name}' from '#{perm}' ACE of '#{object_name}'"
         ace = acl[perm]
 
-        case actor_type
+        case member_type
         when "client", "user"
-          next unless ace['actors'].include?(actor_name)
-          ace['actors'].delete(actor_name)
+          next unless ace['actors'].include?(member_name)
+          ace['actors'].delete(member_name)
         when "group"
-          next unless ace['groups'].include?(actor_name)
-          ace['groups'].delete(actor_name)
+          next unless ace['groups'].include?(member_name)
+          ace['groups'].delete(member_name)
         end
 
         update_ace!(object_type, object_name, perm, ace)
