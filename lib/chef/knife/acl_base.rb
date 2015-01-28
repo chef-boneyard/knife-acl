@@ -21,7 +21,7 @@ module OpscodeAcl
 
     PERM_TYPES = %w(create read update delete grant)
     ACTOR_TYPES = %w(client group)
-    OBJECT_TYPES = %w(clients groups containers data nodes roles cookbooks sandboxes environments)
+    OBJECT_TYPES = %w(clients groups containers data nodes roles cookbooks environments)
     OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/
 
     def validate_object_type!(type)
