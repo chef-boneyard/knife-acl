@@ -156,14 +156,20 @@ named "web.example.com":
 
     knife acl show nodes web.example.com
 
-## knife acl add OBJECT_TYPE OBJECT_NAME PERM [group|client] NAME
+## knife acl add OBJECT_TYPE OBJECT_NAME PERMS MEMBER_TYPE MEMBER_NAME
 
-Add the group or client with NAME to the PERM access control entry of
-the object.  Objects are specified by the combination of
-their type and name.  See the `knife acl show` documentation above for
-the permitted types.
+Add `MEMBER_NAME` to the `PERMS` access control entry of the `OBJECT_NAME`.
+Objects are specified by the combination of their type and name.
 
-Valid `PERM`s are:
+See the `knife acl show` documentation above for valid `OBJECT_TYPE`s.
+
+Valid `MEMBER_TYPE`s are
+
+- client
+- group
+- user
+
+Valid `PERMS` are:
 
 - create
 - read
@@ -171,31 +177,27 @@ Valid `PERM`s are:
 - delete
 - grant
 
-For example, use the following command to give the superuser group
-the ability to delete the node called "api.example.com":
+Multiple `PERMS` can be given in a single command by separating them
+with a comma with no extra spaces.
 
-    knife acl add node api.exmaple.com delete group superusers
+For example, use the following command to give the superusers group
+the ability to delete and update the node called "api.example.com":
 
-## knife acl remove OBJECT_TYPE OBJECT_NAME PERM [group|client] NAME
+    knife acl add nodes web.example.com delete,update group superusers
 
-Remove group or client with NAME from the PERM access control entry of
-the specified object.  Objects are specified by the combination of
-their type and name.  See the `knife acl show` documentation above for
-the permitted types.  See the `knife acl add` documentation above for
-the permitted `PERMS`s.
+## knife acl remove OBJECT_TYPE OBJECT_NAME PERMS MEMBER_TYPE MEMBER_NAME
 
-For example, use the following command to remove the superuser group's
-ability to delete the node called "api.example.com":
+Remove `MEMBER_NAME` from the `PERMS` access control entry of `OBJECT_NAME`.
+Objects are specified by the combination of their type and name.
 
-    knife acl remove node api.exmaple.com delete group superusers
+See the `knife acl show` documentation above for valid `OBJECT_TYPE`s.
+See the `knife acl add` documentation above for the valid `MEMBER_TYPE`s and `PERMS`.
 
-## TODO
+For example, use the following command to remove the superusers group's
+ability to delete and update the node called "api.example.com":
 
-- Feature: build group membership graph
-- Remove duplication in commands
-- Staleness detector for actor map
-- Improve error messages when actor map is missing
-- Don't save group if it will be a no-op
+    knife acl remove nodes web.example.com delete,update group superusers
+
 
 ## LICENSE
 

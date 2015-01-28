@@ -1,6 +1,7 @@
 #
 # Author:: Steven Danna (steve@opscode.com)
-# Copyright:: Copyright 2011--2014 Chef Software, Inc.
+# Author:: Jeremiah Snapp (jeremiah@chef.io)
+# Copyright:: Copyright 2011--2015 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,45 +20,27 @@
 module OpscodeAcl
   class AclAdd < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife acl add OBJECT_TYPE OBJECT_NAME PERM [group|client] NAME"
+    banner "knife acl add OBJECT_TYPE OBJECT_NAME PERMS MEMBER_TYPE MEMBER_NAME"
 
-    attr_reader :object_type, :object_name, :perm, :actor_type, :actor_name
+    attr_reader :object_type, :object_name, :perms, :member_type, :member_name
 
     deps do
       include OpscodeAcl::AclBase
     end
 
     def run
-      @object_type, @object_name, @perm, @actor_type, @actor_name = name_args
+      @object_type, @object_name, @perms, @member_type, @member_name = name_args
 
-      if name_args.length < 5
+      if name_args.length != 5
         show_usage
-        ui.fatal "You must specify the object type, object name, perm, actor type (client or group), and actor name"
+        ui.fatal "You must specify the object type, object name, perms, member type [client|group|user] and member name"
         exit 1
       end
 
       validate_all_params!
-      ace = get_ace(object_type, object_name, perm)
+      validate_member_exists!(member_type, member_name)
 
-      case actor_type
-      when "client"
-        add_actor_to_ace!(actor_name, ace)
-      when "group"
-        add_group_to_ace!(actor_name, ace)
-      when "users"
-        # Not Implemented yet, we shouldn't get here.
-      end
-
-      update_ace!(object_type, object_name, perm, ace)
+      add_to_acl!(object_type, object_name, member_type, member_name, perms)
     end
-
-    def add_group_to_ace!(name, ace)
-      ace['groups'] << name unless ace['groups'].include?(name)
-    end
-
-    def add_actor_to_ace!(name, ace)
-      ace['actors'] << name unless ace['actors'].include?(name)
-    end
-
   end
 end
