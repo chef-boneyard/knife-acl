@@ -22,22 +22,24 @@ module OpscodeAcl
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
     banner "knife acl remove OBJECT_TYPE OBJECT_NAME PERMS MEMBER_TYPE MEMBER_NAME"
 
-    attr_reader :object_type, :object_name, :perms, :member_type, :member_name
-
     deps do
       include OpscodeAcl::AclBase
     end
 
     def run
-      @object_type, @object_name, @perms, @member_type, @member_name = name_args
+      object_type, object_name, perms, member_type, member_name = name_args
 
       if name_args.length != 5
         show_usage
-        ui.fatal "You must specify the object_type, object_name, perms, member type [client|group|user] and member name"
+        ui.fatal "You must specify the object type, object name, perms, member type [client|group|user] and member name"
         exit 1
       end
 
-      validate_all_params!
+      validate_perm_type!(perms)
+      validate_member_type!(member_type)
+      validate_member_name!(member_name)
+      validate_object_name!(object_name)
+      validate_object_type!(object_type)
       validate_member_exists!(member_type, member_name)
 
       remove_from_acl!(object_type, object_name, member_type, member_name, perms)

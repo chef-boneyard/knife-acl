@@ -21,15 +21,13 @@ module OpscodeAcl
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
     banner "knife acl bulk add OBJECT_TYPE REGEX PERMS MEMBER_TYPE MEMBER_NAME"
 
-    attr_reader :object_type, :object_name_matcher, :perms, :member_type, :member_name
-
     deps do
       include OpscodeAcl::AclBase
     end
 
     def run
-      @object_type, regex, @perms, @member_type, @member_name = name_args
-      @object_name_matcher = /#{regex}/
+      object_type, regex, perms, member_type, member_name = name_args
+      object_name_matcher = /#{regex}/
 
       if name_args.length != 5
         show_usage

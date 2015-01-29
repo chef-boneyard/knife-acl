@@ -22,7 +22,7 @@ module OpscodeAcl
 
     PERM_TYPES = %w(create read update delete grant)
     MEMBER_TYPES = %w(client group user)
-    OBJECT_TYPES = %w(clients groups containers data nodes roles cookbooks environments)
+    OBJECT_TYPES = %w(clients containers cookbooks data environments groups nodes roles)
     OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/
 
     def validate_object_type!(type)
@@ -58,17 +58,6 @@ module OpscodeAcl
           exit 1
         end
       end
-    end
-
-    def validate_all_params!
-      # Helper method to valid parameters for commands that modify permisisons
-      # This assumes including class has the necessary accessors
-      # We the validation to ensure we can give the user more helpful error messages.
-      validate_perm_type!(perms)
-      validate_member_type!(member_type)
-      validate_member_name!(member_name)
-      validate_object_name!(object_name)
-      validate_object_type!(object_type)
     end
 
     def validate_member_exists!(member_type, member_name)
