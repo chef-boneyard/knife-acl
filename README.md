@@ -22,24 +22,26 @@ a Deny-by-Default environment.
 Now you can create a new group and manage its members with knife-acl or the Manage web interface.
 Then assign permissions to this group as you see fit.
 
-# Installation
+## Installation
 
-This knife plugin is packaged as a gem.  To install it, enter the
-following:
+This knife plugin is packaged as a gem. The 1.0.0.beta version of knife-acl is currently recommended
+so be sure to tell the gem command to install the prerelease.
+
+To install it, enter the following:
 
 ## With [Chef DK](https://downloads.chef.io/chef-dk/)
 
-    chef gem install knife-acl
+    chef gem install knife-acl --pre
 
 ## On the shell of a Chef server active backend
 
 As root:
 
-    /opt/opscode/embedded/bin/gem install knife-acl
+    /opt/opscode/embedded/bin/gem install knife-acl --pre
 
 ## With chef-client installed from a RubyGems
 
-    gem install knife-acl
+    gem install knife-acl --pre
 
 # Subcommands
 
