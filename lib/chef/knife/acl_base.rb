@@ -137,5 +137,43 @@ module OpscodeAcl
       rest.put_rest("#{object_type}/#{object_name}/_acl/#{ace_type}", ace_type => ace)
     end
 
+    def add_to_group!(group_name, member_type, member_name)
+      validate_member_exists!(member_type, member_name)
+      existing_group = rest.get_rest("groups/#{group_name}")
+      ui.msg "Adding '#{member_name}' to '#{group_name}' group"
+      if !existing_group["#{member_type}s"].include?(member_name)
+        existing_group["#{member_type}s"] << member_name
+        new_group = {
+          "groupname" => existing_group["groupname"],
+          "orgname" => existing_group["orgname"],
+          "actors" => {
+            "users" => existing_group["users"],
+            "clients" => existing_group["clients"],
+            "groups" => existing_group["groups"]
+          }
+        }
+        rest.put_rest("groups/#{group_name}", new_group)
+      end
+    end
+
+    def remove_from_group!(group_name, member_type, member_name)
+      validate_member_exists!(member_type, member_name)
+      existing_group = rest.get_rest("groups/#{group_name}")
+      ui.msg "Removing '#{member_name}' from '#{group_name}' group"
+      if existing_group["#{member_type}s"].include?(member_name)
+        existing_group["#{member_type}s"].delete(member_name)
+        new_group = {
+          "groupname" => existing_group["groupname"],
+          "orgname" => existing_group["orgname"],
+          "actors" => {
+            "users" => existing_group["users"],
+            "clients" => existing_group["clients"],
+            "groups" => existing_group["groups"]
+          }
+        }
+        rest.put_rest("groups/#{group_name}", new_group)
+      end
+    end
+
   end
 end
