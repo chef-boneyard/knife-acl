@@ -1,6 +1,7 @@
 #
 # Author:: Seth Falcon (<seth@opscode.com>)
-# Copyright:: Copyright 2011--2014 Chef Software, Inc.
+# Author:: Jeremiah Snapp (<jeremiah@chef.io>)
+# Copyright:: Copyright 2011--2015 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,21 +21,18 @@ module OpscodeAcl
   class GroupList < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
     banner "knife group list"
-    
+
+    deps do
+      include OpscodeAcl::AclBase
+    end
+
     def run
-      chef_rest = Chef::REST.new(Chef::Config[:chef_server_url])
-      groups = chef_rest.get_rest("groups").keys.sort
-      
+      groups = rest.get_rest("groups").keys.sort
       ui.output(remove_usags(groups))
     end
 
     def remove_usags(groups)
       groups.select { |gname| !is_usag?(gname) }
     end
- 
-    def is_usag?(gname)
-      gname.length == 32 && gname =~ /^[0-9a-f]+$/
-    end
   end
 end
-

@@ -1,6 +1,7 @@
 #
 # Author:: Steven Danna (steve@opscode.com)
-# Copyright:: Copyright 2011--2014 Chef Software, Inc.
+# Author:: Jeremiah Snapp (<jeremiah@chef.io>)
+# Copyright:: Copyright 2011--2015 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -80,6 +81,10 @@ module OpscodeAcl
         ui.fatal "#{member_type} '#{member_name}' does not exist"
         exit 1
       end
+    end
+
+    def is_usag?(gname)
+      gname.length == 32 && gname =~ /^[0-9a-f]+$/
     end
 
     def get_acl(object_type, object_name)
