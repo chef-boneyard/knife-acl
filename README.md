@@ -198,6 +198,37 @@ ability to delete and update the node called "api.example.com":
 
     knife acl remove nodes web.example.com delete,update group superusers
 
+## knife acl bulk add OBJECT_TYPE REGEX PERMS MEMBER_TYPE MEMBER_NAME
+
+Add `MEMBER_NAME` to the `PERMS` access control entry for each object in a
+set of objects of `OBJECT_TYPE`.
+
+The set of objects are specified by matching the objects' names with the
+given REGEX regular expression surrounded by quotes.
+
+See the `knife acl show` documentation above for valid `OBJECT_TYPE`s.
+See the `knife acl add` documentation above for the valid `MEMBER_TYPE`s and `PERMS`.
+
+For example, use the following command to add the superusers group's
+ability to delete and update all nodes matching the regular expression 'WIN-.*':
+
+    knife acl bulk add nodes 'WIN-.*' delete,update group superusers
+
+## knife acl bulk remove OBJECT_TYPE REGEX PERMS MEMBER_TYPE MEMBER_NAME
+
+Remove `MEMBER_NAME` from the `PERMS` access control entry for each object in a
+set of objects of `OBJECT_TYPE`.
+
+The set of objects are specified by matching the objects' names with the
+given REGEX regular expression surrounded by quotes.
+
+See the `knife acl show` documentation above for valid `OBJECT_TYPE`s.
+See the `knife acl add` documentation above for the valid `MEMBER_TYPE`s and `PERMS`.
+
+For example, use the following command to remove the superusers group's
+ability to delete and update all nodes matching the regular expression 'WIN-.*':
+
+    knife acl bulk remove nodes 'WIN-.*' delete,update group superusers
 
 ## LICENSE
 
