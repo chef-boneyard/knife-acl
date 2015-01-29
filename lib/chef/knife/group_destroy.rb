@@ -1,6 +1,7 @@
 #
 # Author:: Christopher Maier (<cm@opscode.com>)
-# Copyright:: Copyright 2014 Opscode, Inc.
+# Author:: Jeremiah Snapp (<jeremiah@chef.io>)
+# Copyright:: Copyright 2015 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,20 +20,29 @@
 module OpscodeAcl
   class GroupDestroy < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife group destroy GROUP"
+    banner "knife group destroy GROUP_NAME"
 
     deps do
-      require 'yaml'
+      include OpscodeAcl::AclBase
     end
 
     def run
       group_name = name_args[0]
-      if !group_name || group_name.empty?
-        ui.error "must specify a group name"
+
+      if name_args.length != 1
+        show_usage
+        ui.fatal "You must specify group name"
         exit 1
       end
-      result = rest.delete_rest("groups/#{group_name}")
-      ui.output result
+
+      validate_member_name!(group_name)
+
+      if %w(admins billing-admins clients users).include?(group_name.downcase)
+        ui.fatal "the '#{group_name}' group is a special group that should not be destroyed"
+        exit 1
+      end
+      ui.msg "Destroying '#{group_name}' group"
+      rest.delete_rest("groups/#{group_name}")
     end
   end
 end
