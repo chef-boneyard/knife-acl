@@ -1,12 +1,12 @@
-# knife ACL
+# knife-acl
 
 # Description
 
-This is an Opscode supported knife plugin which provides some user/group
-ACL operations for Enterprise Chef. All commands assume a working
-knife configuration for an organization on Enterprise Chef.
+This is a Chef Software, Inc.-supported knife plugin which provides some user/group
+ACL operations for Chef server. All commands assume a working knife
+configuration for an organization on a Chef server.
 
-# User Specific Association Group
+# User Specific Association Groups
 
 User Specific Association Groups (USAGs) are a mechanism to grant access to
 organization objects to users such that it is possible to quickly revoke the
@@ -19,28 +19,28 @@ When the user is dissociated from an organization only the user's USAG needs to
 be deleted thereby quickly revoking access to all objects in the organization.
 
 USAGs and their membership within other normal groups are not visible in the
-current [management console's web interface](https://manage.opscode.com).
+[management console's web interface](https://manage.chef.io).
 
-### STOP managing group membership with the web interface
+## STOP managing group membership with the web interface
 
 USAGs are currently the correct way to add/remove users to/from groups in an
 organization.
 
 **Be warned**, once you start managing a group's membership using `knife-acl`
 you should **avoid managing that group's membership using the [management
-console's web interface](https://manage.opscode.com)**.
+console's web interface](https://manage.chef.io)**.
 
 You can add USAGs to a group using `knife-acl` but if you click "Save Group" in
 the web interface then all USAGs will be removed from the group erasing any
 `knife-acl` work that was done on the group. This will happen even if no
 changes were made to the group's members in the web interface.
 
-The "Users" group is a special group. When a user is associated with an
+The "users" group is a special group. When a user is associated with an
 organization the user's USAG is automatically made a member of the
-"Users" group. You can remove USAGs from the "Users" group using `knife-acl`
+"users" group. You can remove USAGs from the "users" group using `knife-acl`
 but if you click "Save Group" in the web interface then all USAGs in the
-organization will be added back to the "Users" group erasing any `knife-acl`
-work that was done on the "Users" group. This will happen even if no changes
+organization will be added back to the "users" group erasing any `knife-acl`
+work that was done on the "users" group. This will happen even if no changes
 were made to the group's members in the web interface.
 
 # Example: Manage a read-only Group
@@ -50,52 +50,58 @@ You can use these commands to manage a read-only group.  To do so:
 1. Run `knife actor map` to create/update a local actor map file
    `actor-map.yaml`:
 
-        knife actor map
+    knife actor map
 
 2. Create a group that will hold read-only users:
 
-        knife group create read-only
+    knife group create read-only
 
 3. For each user you wish to have read only access as defined by
    permissions given to the "read-only" group do the following:
 
-        knife group add actor read-only USER
-        knife group remove actor users USER
+    knife group add actor read-only USER
+    knife group remove actor users USER
 
-   This adds the user to the 'read-only' group and removes them from the
-   'users' group which has more permissions by default (users are
-   added to 'users' when added to an org).
+   This adds the user to the "read-only" group and removes them from the
+   "users" group which has more permissions by default (users are
+   added to "users" when added to an organizaton).
 
 # Installation
 
 This knife plugin is packaged as a gem.  To install it, enter the
 following:
 
-#### Gem installed chef-client on a workstation
+## With [Chef DK](https://downloads.chef.io/chef-dk/)
+
+    chef gem install knife-acl
+
+## On the shell of a Chef server active backend
+
+As root:
+
+    /opt/opscode/embedded/bin/gem install knife-acl
+
+## With chef-client installed from a RubyGems
+
     gem install knife-acl
-
-#### Opscode hosted Enterprise Chef (OHC) with an Omnibus-installed chef-client on a workstation
-/opt/chef/embedded/bin/gem install knife-acl
-
-#### Opscode Enterprise Chef (OPC) Directly on the active backend
-as root: /opt/opscode/embedded/bin/gem install knife-acl
 
 # Subcommands
 
 ## knife user list
 
-Show a list of users associated with your org
+Show a list of users associated with your organization
 
 ## knife actor map
 
-Create a local map file actor-map.yaml" that maps users to their USAG
+Create a local map file named "actor-map.yaml" that maps users to their USAG
 and stores a list of clients.
 
 This command creates a local cache of the user to USAG mapping as well
 as a local cache of clients and is used by the following commands:
-- `knife group show`,
-- `knife group add actor`, and
-- `knife group remove actor`.
+
+- `knife group show`
+- `knife group add actor`
+- `knife group remove actor`
 
 ## knife group create
 
@@ -103,7 +109,7 @@ Create a new group.
 
 ## knife group list
 
-List groups in the org.
+List groups in the organization.
 
 ## knife group show GROUP
 
@@ -134,16 +140,16 @@ actors and groups) remain in the system, only `GROUP` is removed.
 Shows the ACL for the specified object.  Objects are identified by the
 combination of their type and name.
 
-Valid `OBJECT_TYPE`'s are
+Valid `OBJECT_TYPE`s are
 
 - clients
-- groups
 - containers
+- cookbooks
 - data
+- environments
+- groups
 - nodes
 - roles
-- cookbooks
-- environments
 
 For example, use the following command to obtain the ACL for a node
 named "web.example.com":
@@ -175,14 +181,13 @@ the ability to delete the node called "api.example.com":
 Remove group or client with NAME from the PERM access control entry of
 the specified object.  Objects are specified by the combination of
 their type and name.  See the `knife acl show` documentation above for
-the permitted types.  See the `knife acl add` documentation abouve for
+the permitted types.  See the `knife acl add` documentation above for
 the permitted `PERMS`s.
 
 For example, use the following command to remove the superuser group's
 ability to delete the node called "api.example.com":
 
     knife acl remove node api.exmaple.com delete group superusers
-
 
 ## TODO
 
@@ -196,12 +201,12 @@ ability to delete the node called "api.example.com":
 
 Unless otherwise specified all works in this repository are
 
-Copyright 2013--2014 Chef Software, Inc.
+Copyright 2013-2015 Chef Software, Inc.
 
 |||
 | ------------- |-------------:|
-| Author      |Seth Falcon (seth@opscode.com)|
-| Copyright  |Copyright (c) 2013--2014 Chef Software, Inc.|
+| Author      |Seth Falcon (seth@chef.io)|
+| Copyright  |Copyright (c) 2013-2015 Chef Software, Inc.|
 | License     |Apache License, Version 2.0|
 
 Licensed under the Apache License, Version 2.0 (the "License");
