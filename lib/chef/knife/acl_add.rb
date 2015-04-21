@@ -31,12 +31,16 @@ module OpscodeAcl
 
       if name_args.length != 5
         show_usage
-        ui.fatal "You must specify the object type, object name, perms, member type [client|group|user] and member name"
+        ui.fatal "You must specify the object type, object name, perms, member type [group] and member name"
         exit 1
       end
 
+      unless member_type == 'group'
+        ui.fatal "ERROR: To enforce best practice, knife-acl can only add a group to an ACL."
+        ui.fatal "       See the knife-acl README for more information."
+        exit 1
+      end
       validate_perm_type!(perms)
-      validate_member_type!(member_type)
       validate_member_name!(member_name)
       validate_object_name!(object_name)
       validate_object_type!(object_type)
