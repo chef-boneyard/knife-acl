@@ -39,6 +39,11 @@ module OpscodeAcl
         ui.fatal "ERROR: 'pivotal' is a system user so knife-acl will not remove it from an ACL."
         exit 1
       end
+      if member_name == 'admins' && member_type == 'group' && perms.to_s.split(',').include?('grant')
+        ui.fatal "ERROR: knife-acl will not remove the 'admins' group from the 'grant' ACE."
+        ui.fatal "       Removal could prevent future attempts to modify permissions."
+        exit 1
+      end
       validate_perm_type!(perms)
       validate_member_type!(member_type)
       validate_member_name!(member_name)
