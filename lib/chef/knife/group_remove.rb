@@ -20,18 +20,18 @@
 module OpscodeAcl
   class GroupRemove < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife group remove GROUP_NAME MEMBER_TYPE MEMBER_NAME"
+    banner "knife group remove MEMBER_TYPE MEMBER_NAME GROUP_NAME"
 
     deps do
       include OpscodeAcl::AclBase
     end
 
     def run
-      group_name, member_type, member_name = name_args
+      member_type, member_name, group_name = name_args
 
       if name_args.length != 3
         show_usage
-        ui.fatal "You must specify group name, member type [client|group|user] and member name"
+        ui.fatal "You must specify member type [client|group|user], member name and group name"
         exit 1
       end
 
@@ -45,7 +45,7 @@ module OpscodeAcl
         exit 1
       end
 
-      remove_from_group!(group_name, member_type, member_name)
+      remove_from_group!(member_type, member_name, group_name)
     end
   end
 end

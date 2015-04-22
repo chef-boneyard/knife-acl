@@ -84,7 +84,7 @@ module OpscodeAcl
       get_acl(object_type, object_name)[perm]
     end
 
-    def add_to_acl!(object_type, object_name, member_type, member_name, perms)
+    def add_to_acl!(member_type, member_name, object_type, object_name, perms)
       acl = get_acl(object_type, object_name)
       perms.split(',').each do |perm|
         ui.msg "Adding '#{member_name}' to '#{perm}' ACE of '#{object_name}'"
@@ -103,7 +103,7 @@ module OpscodeAcl
       end
     end
 
-    def remove_from_acl!(object_type, object_name, member_type, member_name, perms)
+    def remove_from_acl!(member_type, member_name, object_type, object_name, perms)
       acl = get_acl(object_type, object_name)
       perms.split(',').each do |perm|
         ui.msg "Removing '#{member_name}' from '#{perm}' ACE of '#{object_name}'"
@@ -126,7 +126,7 @@ module OpscodeAcl
       rest.put_rest("#{object_type}/#{object_name}/_acl/#{ace_type}", ace_type => ace)
     end
 
-    def add_to_group!(group_name, member_type, member_name)
+    def add_to_group!(member_type, member_name, group_name)
       validate_member_exists!(member_type, member_name)
       existing_group = rest.get_rest("groups/#{group_name}")
       ui.msg "Adding '#{member_name}' to '#{group_name}' group"
@@ -145,7 +145,7 @@ module OpscodeAcl
       end
     end
 
-    def remove_from_group!(group_name, member_type, member_name)
+    def remove_from_group!(member_type, member_name, group_name)
       validate_member_exists!(member_type, member_name)
       existing_group = rest.get_rest("groups/#{group_name}")
       ui.msg "Removing '#{member_name}' from '#{group_name}' group"

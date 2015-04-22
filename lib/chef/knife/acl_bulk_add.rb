@@ -19,19 +19,19 @@
 module OpscodeAcl
   class AclBulkAdd < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife acl bulk add OBJECT_TYPE REGEX PERMS MEMBER_TYPE MEMBER_NAME"
+    banner "knife acl bulk add MEMBER_TYPE MEMBER_NAME OBJECT_TYPE REGEX PERMS"
 
     deps do
       include OpscodeAcl::AclBase
     end
 
     def run
-      object_type, regex, perms, member_type, member_name = name_args
+      member_type, member_name, object_type, regex, perms = name_args
       object_name_matcher = /#{regex}/
 
       if name_args.length != 5
         show_usage
-        ui.fatal "You must specify the object type, object name REGEX, perms, member type [group] and member name"
+        ui.fatal "You must specify the member type [group], member name, object type, object name REGEX and perms"
         exit 1
       end
 
@@ -66,7 +66,7 @@ module OpscodeAcl
       ui.confirm("Are you sure you want to modify the ACL of these #{object_type}?")
 
       objects_to_modify.each do |object_name|
-        add_to_acl!(object_type, object_name, member_type, member_name, perms)
+        add_to_acl!(member_type, member_name, object_type, object_name, perms)
       end
     end
   end

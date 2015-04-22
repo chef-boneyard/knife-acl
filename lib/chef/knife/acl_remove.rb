@@ -20,18 +20,18 @@
 module OpscodeAcl
   class AclRemove < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife acl remove OBJECT_TYPE OBJECT_NAME PERMS MEMBER_TYPE MEMBER_NAME"
+    banner "knife acl remove MEMBER_TYPE MEMBER_NAME OBJECT_TYPE OBJECT_NAME PERMS"
 
     deps do
       include OpscodeAcl::AclBase
     end
 
     def run
-      object_type, object_name, perms, member_type, member_name = name_args
+      member_type, member_name, object_type, object_name, perms = name_args
 
       if name_args.length != 5
         show_usage
-        ui.fatal "You must specify the object type, object name, perms, member type [client|group|user] and member name"
+        ui.fatal "You must specify the member type [client|group|user], member name, object type, object name and perms"
         exit 1
       end
 
@@ -51,7 +51,7 @@ module OpscodeAcl
       validate_object_type!(object_type)
       validate_member_exists!(member_type, member_name)
 
-      remove_from_acl!(object_type, object_name, member_type, member_name, perms)
+      remove_from_acl!(member_type, member_name, object_type, object_name, perms)
     end
   end
 end
