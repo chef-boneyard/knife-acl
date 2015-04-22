@@ -35,6 +35,10 @@ module OpscodeAcl
         exit 1
       end
 
+      if member_name == 'pivotal' && %w(client user).include?(member_type)
+        ui.fatal "ERROR: 'pivotal' is a system user so knife-acl will not remove it from an ACL."
+        exit 1
+      end
       validate_perm_type!(perms)
       validate_member_type!(member_type)
       validate_member_name!(member_name)
