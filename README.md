@@ -78,29 +78,29 @@ For example, the following commands will completely remove the `users` group fro
 every container and object in a Chef organization.
 
 ```
-knife acl remove containers clients create,read,update,delete,grant group users
-knife acl bulk remove clients '.*' create,read,update,delete,grant group users
+knife acl remove group users containers clients create,read,update,delete,grant
+knife acl bulk remove group users clients '.*' create,read,update,delete,grant
 
 
-knife acl remove containers sandboxes create,read,update,delete,grant group users
-knife acl remove containers cookbooks create,read,update,delete,grant group users
-knife acl bulk remove cookbooks '.*' create,read,update,delete,grant group users
+knife acl remove group users containers sandboxes create,read,update,delete,grant
+knife acl remove group users containers cookbooks create,read,update,delete,grant
+knife acl bulk remove group users cookbooks '.*' create,read,update,delete,grant
 
 
-knife acl remove containers data create,read,update,delete,grant group users
-knife acl bulk remove data '.*' create,read,update,delete,grant group users
+knife acl remove group users containers data create,read,update,delete,grant
+knife acl bulk remove group users data '.*' create,read,update,delete,grant
 
 
-knife acl remove containers environments create,read,update,delete,grant group users
-knife acl bulk remove environments '.*' create,read,update,delete,grant group users
+knife acl remove group users containers environments create,read,update,delete,grant
+knife acl bulk remove group users environments '.*' create,read,update,delete,grant
 
 
-knife acl remove containers nodes create,read,update,delete,grant group users
-knife acl bulk remove nodes '.*' create,read,update,delete,grant group users
+knife acl remove group users containers nodes create,read,update,delete,grant
+knife acl bulk remove group users nodes '.*' create,read,update,delete,grant
 
 
-knife acl remove containers roles create,read,update,delete,grant group users
-knife acl bulk remove roles '.*' create,read,update,delete,grant group users
+knife acl remove group users containers roles create,read,update,delete,grant
+knife acl bulk remove group users roles '.*' create,read,update,delete,grant
 ```
 
 #### Selectively Allow Access
@@ -118,29 +118,29 @@ gives it `read` access on all objects.
 knife group create read-only
 
 
-knife acl add containers clients read group read-only
-knife acl bulk add clients '.*' read group read-only
+knife acl add group read-only containers clients read
+knife acl bulk add group read-only clients '.*' read
 
 
-knife acl add containers sandboxes read group read-only
-knife acl add containers cookbooks read group read-only
-knife acl bulk add cookbooks '.*' read group read-only
+knife acl add group read-only containers sandboxes read
+knife acl add group read-only containers cookbooks read
+knife acl bulk add group read-only cookbooks '.*' read
 
 
-knife acl add containers data read group read-only
-knife acl bulk add data '.*' read group read-only
+knife acl add group read-only containers data read
+knife acl bulk add group read-only data '.*' read
 
 
-knife acl add containers environments read group read-only
-knife acl bulk add environments '.*' read group read-only
+knife acl add group read-only containers environments read
+knife acl bulk add group read-only environments '.*' read
 
 
-knife acl add containers nodes read group read-only
-knife acl bulk add nodes '.*' read group read-only
+knife acl add group read-only containers nodes read
+knife acl bulk add group read-only nodes '.*' read
 
 
-knife acl add containers roles read group read-only
-knife acl bulk add roles '.*' read group read-only
+knife acl add group read-only containers roles read
+knife acl bulk add group read-only roles '.*' read
 ```
 
 ## Installation
@@ -182,7 +182,7 @@ Create a new group `GROUP_NAME` to the organization.
 
 Show the membership details for `GROUP_NAME`.
 
-## knife group add GROUP_NAME MEMBER_TYPE MEMBER_NAME
+## knife group add MEMBER_TYPE MEMBER_NAME GROUP_NAME
 
 Add MEMBER_NAME to `GROUP_NAME`.
 
@@ -192,7 +192,7 @@ Valid `MEMBER_TYPE` values are
 - group
 - user
 
-## knife group remove GROUP_NAME MEMBER_TYPE MEMBER_NAME
+## knife group remove MEMBER_TYPE MEMBER_NAME GROUP_NAME
 
 Remove `MEMBER_NAME` from `GROUP_NAME`.
 
@@ -227,7 +227,7 @@ named "web.example.com":
 
     knife acl show nodes web.example.com
 
-## knife acl add OBJECT_TYPE OBJECT_NAME PERMS group GROUP_NAME
+## knife acl add group GROUP_NAME OBJECT_TYPE OBJECT_NAME PERMS
 
 The best practice is to only add groups to ACLs. To enforce this best practice
 the `knife acl add` command is only able to add groups to ACLs.
@@ -260,9 +260,9 @@ with a comma with no extra spaces.
 For example, use the following command to give the superusers group
 the ability to delete and update the node called "web.example.com":
 
-    knife acl add nodes web.example.com delete,update group superusers
+    knife acl add group superusers nodes web.example.com delete,update
 
-## knife acl bulk add OBJECT_TYPE REGEX PERMS group GROUP_NAME
+## knife acl bulk add group GROUP_NAME OBJECT_TYPE REGEX PERMS
 
 The best practice is to only add groups to ACLs. To enforce this best practice
 the `knife acl bulk add` command is only able to add groups to ACLs.
@@ -278,12 +278,18 @@ See the `knife acl add` documentation above for valid `OBJECT_TYPE` and `PERMS` 
 For example, use the following command to give the superusers group
 the ability to delete and update all nodes matching the regular expression 'WIN-.*':
 
-    knife acl bulk add nodes 'WIN-.*' delete,update group superusers
+    knife acl bulk add group superusers nodes 'WIN-.*' delete,update
 
-## knife acl remove OBJECT_TYPE OBJECT_NAME PERMS MEMBER_TYPE MEMBER_NAME
+## knife acl remove MEMBER_TYPE MEMBER_NAME OBJECT_TYPE OBJECT_NAME PERMS
 
 Remove `MEMBER_NAME` from the `PERMS` access control entry of `OBJECT_NAME`.
 Objects are specified by the combination of their type and name.
+
+Valid `MEMBER_TYPE` values are
+
+- client
+- group
+- user
 
 Valid `OBJECT_TYPE` values are
 
@@ -307,18 +313,12 @@ Valid `PERMS` are:
 Multiple `PERMS` can be given in a single command by separating them
 with a comma with no extra spaces.
 
-Valid `MEMBER_TYPE` values are
-
-- client
-- group
-- user
-
 For example, use the following command to remove the superusers group from the delete and
 update access control entries for the node called "web.example.com":
 
-    knife acl remove nodes web.example.com delete,update group superusers
+    knife acl remove group superusers nodes web.example.com delete,update
 
-## knife acl bulk remove OBJECT_TYPE REGEX PERMS MEMBER_TYPE MEMBER_NAME
+## knife acl bulk remove MEMBER_TYPE MEMBER_NAME OBJECT_TYPE REGEX PERMS
 
 Remove `MEMBER_NAME` from the `PERMS` access control entry for each object in a
 set of objects of `OBJECT_TYPE`.
@@ -326,12 +326,12 @@ set of objects of `OBJECT_TYPE`.
 The set of objects are specified by matching the objects' names with the
 given REGEX regular expression surrounded by quotes.
 
-See the `knife acl remove` documentation above for valid `OBJECT_TYPE`, `PERMS` and `MEMBER_TYPE` values.
+See the `knife acl remove` documentation above for valid `MEMBER_TYPE`, `OBJECT_TYPE` and `PERMS` values.
 
 For example, use the following command to remove the superusers group from the delete and
 update access control entries for all nodes matching the regular expression 'WIN-.*':
 
-    knife acl bulk remove nodes 'WIN-.*' delete,update group superusers
+    knife acl bulk remove group superusers nodes 'WIN-.*' delete,update
 
 ## Default Permissions for Containers
 
@@ -341,45 +341,45 @@ be helpful if you need to restore container permissions back to their
 default values.
 
 ```
-knife acl add containers clients create,read,update,delete,grant group admins
-knife acl remove containers clients create,read,update,delete,grant group clients
-knife acl add containers clients read,delete group users
-knife acl remove containers clients create,update,grant group users
+knife acl add group admins containers clients create,read,update,delete,grant
+knife acl remove group clients containers clients create,read,update,delete,grant
+knife acl add group users containers clients read,delete
+knife acl remove group users containers clients create,update,grant
 
-knife acl add containers cookbooks create,read,update,delete,grant group admins
-knife acl add containers cookbooks read group clients
-knife acl remove containers cookbooks create,update,delete,grant group clients
-knife acl add containers cookbooks create,read,update,delete group users
-knife acl remove containers cookbooks grant group users
+knife acl add group admins containers cookbooks create,read,update,delete,grant
+knife acl add group clients containers cookbooks read
+knife acl remove group clients containers cookbooks create,update,delete,grant
+knife acl add group users containers cookbooks create,read,update,delete
+knife acl remove group users containers cookbooks grant
 
-knife acl add containers data create,read,update,delete,grant group admins
-knife acl add containers data read group clients
-knife acl remove containers data create,update,delete,grant group clients
-knife acl add containers data create,read,update,delete group users
-knife acl remove containers data grant group users
+knife acl add group admins containers data create,read,update,delete,grant
+knife acl add group clients containers data read
+knife acl remove group clients containers data create,update,delete,grant
+knife acl add group users containers data create,read,update,delete
+knife acl remove group users containers data grant
 
-knife acl add containers environments create,read,update,delete,grant group admins
-knife acl add containers environments read group clients
-knife acl remove containers environments create,update,delete,grant group clients
-knife acl add containers environments create,read,update,delete group users
-knife acl remove containers environments grant group users
+knife acl add group admins containers environments create,read,update,delete,grant
+knife acl add group clients containers environments read
+knife acl remove group clients containers environments create,update,delete,grant
+knife acl add group users containers environments create,read,update,delete
+knife acl remove group users containers environments grant
 
-knife acl add containers nodes create,read,update,delete,grant group admins
-knife acl add containers nodes create,read group clients
-knife acl remove containers nodes update,delete,grant group clients
-knife acl add containers nodes create,read,update,delete group users
-knife acl remove containers nodes grant group users
+knife acl add group admins containers nodes create,read,update,delete,grant
+knife acl add group clients containers nodes create,read
+knife acl remove group clients containers nodes update,delete,grant
+knife acl add group users containers nodes create,read,update,delete
+knife acl remove group users containers nodes grant
 
-knife acl add containers roles create,read,update,delete,grant group admins
-knife acl add containers roles read group clients
-knife acl remove containers roles create,update,delete,grant group clients
-knife acl add containers roles create,read,update,delete group users
-knife acl remove containers roles grant group users
+knife acl add group admins containers roles create,read,update,delete,grant
+knife acl add group clients containers roles read
+knife acl remove group clients containers roles create,update,delete,grant
+knife acl add group users containers roles create,read,update,delete
+knife acl remove group users containers roles grant
 
-knife acl add containers sandboxes create,read,update,delete,grant group admins
-knife acl remove containers sandboxes create,read,update,delete,grant group clients
-knife acl add containers sandboxes create group users
-knife acl remove containers sandboxes read,update,delete,grant group users
+knife acl add group admins containers sandboxes create,read,update,delete,grant
+knife acl remove group clients containers sandboxes create,read,update,delete,grant
+knife acl add group users containers sandboxes create
+knife acl remove group users containers sandboxes read,update,delete,grant
 ```
 
 ## LICENSE
