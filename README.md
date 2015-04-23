@@ -65,13 +65,14 @@ to an objects' permissions.
 If a group ever needs to be removed from the permissions of all objects the group can simply
 be deleted.
 
-#### Deny-by-Default Access for Non-admin Users
+#### Deny-by-Default Access Control for Non-admin Users
 
-The "Users" group by default provides regular users a lot of access to modify objects
+The "Users" group by default provides regular (non-admin) users a lot of access to modify objects
 in the Chef Server. If you want to restrict access the first thing to do is remove the
 "Users" group from the Access Control Entries (ACEs) of those objects and their containers.
 
-This will create a Deny-by-Default as far as regular users are considered.
+This will create a Deny-by-Default access control for regular (non-admin) users.
+
 Admin users will still have admin access to objects.
 
 For example, the following commands will completely remove the `users` group from all ACEs of
@@ -275,10 +276,13 @@ given REGEX regular expression surrounded by quotes.
 
 See the `knife acl add` documentation above for valid `OBJECT_TYPE` and `PERMS` values.
 
-For example, use the following command to give the superusers group
-the ability to delete and update all nodes matching the regular expression 'WIN-.*':
+Appending `-y` or `--yes` to the `knife acl bulk add` command will run the command
+without any prompts for confirmation.
 
-    knife acl bulk add group superusers nodes 'WIN-.*' delete,update
+For example, use the following command to give the superusers group the ability to
+delete and update all nodes matching the regular expression 'WIN-.*':
+
+    knife acl bulk add group superusers nodes 'WIN-.*' delete,update --yes
 
 ## knife acl remove MEMBER_TYPE MEMBER_NAME OBJECT_TYPE OBJECT_NAME PERMS
 
@@ -328,10 +332,13 @@ given REGEX regular expression surrounded by quotes.
 
 See the `knife acl remove` documentation above for valid `MEMBER_TYPE`, `OBJECT_TYPE` and `PERMS` values.
 
+Appending `-y` or `--yes` to the `knife acl bulk add` command will run the command
+without any prompts for confirmation.
+
 For example, use the following command to remove the superusers group from the delete and
 update access control entries for all nodes matching the regular expression 'WIN-.*':
 
-    knife acl bulk remove group superusers nodes 'WIN-.*' delete,update
+    knife acl bulk remove group superusers nodes 'WIN-.*' delete,update --yes
 
 ## Default Permissions for Containers
 
