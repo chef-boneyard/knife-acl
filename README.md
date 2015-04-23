@@ -1,6 +1,6 @@
 # knife-acl
 
-# Description
+## Description
 
 This is a Chef Software, Inc.-supported knife plugin which provides some user/group
 ACL operations for Chef server.
@@ -11,6 +11,28 @@ Reference:
 
 1. [Chef Server Permissions](http://docs.chef.io/server/server_orgs.html#permissions)
 2. [Chef Server Groups](http://docs.chef.io/server/server_orgs.html#groups)
+
+## Installation
+
+This knife plugin is packaged as a gem.  To install it, enter the
+following:
+
+The 1.0.0.beta version of knife-acl is currently recommended so be sure
+to tell the gem command to install the prerelease.
+
+#### ChefDK installed on a workstation
+    chef gem install knife-acl --pre
+
+#### Omnibus installed chef on a workstation
+    /opt/chef/embedded/bin/gem install knife-acl --pre
+
+#### Gem installed chef on a workstation
+    gem install knife-acl --pre
+
+#### Opscode Enterprise Chef (OPC) Directly on the active backend
+as root:
+
+    /opt/opscode/embedded/bin/gem install knife-acl --pre
 
 ### _Warning about Users group_
 
@@ -143,27 +165,6 @@ knife acl bulk add group read-only nodes '.*' read
 knife acl add group read-only containers roles read
 knife acl bulk add group read-only roles '.*' read
 ```
-
-## Installation
-
-This knife plugin is packaged as a gem. The 1.0.0.beta version of knife-acl is currently recommended
-so be sure to tell the gem command to install the prerelease.
-
-To install it, enter the following:
-
-## With [Chef DK](https://downloads.chef.io/chef-dk/)
-
-    chef gem install knife-acl --pre
-
-## On the shell of a Chef server active backend
-
-As root:
-
-    /opt/opscode/embedded/bin/gem install knife-acl --pre
-
-## With chef-client installed from a RubyGems
-
-    gem install knife-acl --pre
 
 # Subcommands
 
