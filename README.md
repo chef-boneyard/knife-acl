@@ -87,48 +87,52 @@ to an objects' permissions.
 If a group ever needs to be removed from the permissions of all objects the group can simply
 be deleted.
 
-#### Deny-by-Default Access Control for Non-admin Users
+#### Setup Default Read-Only Access for Non-admin Users
 
-The "Users" group by default provides regular (non-admin) users a lot of access to modify objects
-in the Chef Server. If you want to restrict access the first thing to do is remove the
-"Users" group from the Access Control Entries (ACEs) of those objects and their containers.
+The "Users" group by default provides regular (non-admin) users a lot of access to modify objects in
+the Chef Server.
 
-This will create a Deny-by-Default access control for regular (non-admin) users.
+Removing the "Users" group from the "create", "update", "delete" and "grant" Access Control Entries (ACEs)
+of all objects and containers will create a default read-only access for non-admin users.
 
-Admin users will still have admin access to objects.
+To completely prevent non-admin users from accessing all objects and containers then also remove the
+"Users" group from the "read" ACE.
 
-For example, the following commands will completely remove the `users` group from all ACEs of
-every container and object in a Chef organization.
+Admin users will still have default admin access to all objects and containers.
+
+**NOTE:** Please note that currently the Chef Manage web UI will appear to allow read-only users to edit
+some objects. However, the changes are not actually saved and they disappear when the read-only
+user refreshes the page.
 
 ```
-knife acl remove group users containers clients create,read,update,delete,grant
-knife acl bulk remove group users clients '.*' create,read,update,delete,grant
+knife acl remove group users containers clients create,update,delete,grant
+knife acl bulk remove group users clients '.*' create,update,delete,grant
 
 
-knife acl remove group users containers sandboxes create,read,update,delete,grant
-knife acl remove group users containers cookbooks create,read,update,delete,grant
-knife acl bulk remove group users cookbooks '.*' create,read,update,delete,grant
+knife acl remove group users containers sandboxes create,update,delete,grant
+knife acl remove group users containers cookbooks create,update,delete,grant
+knife acl bulk remove group users cookbooks '.*' create,update,delete,grant
 
 
-knife acl remove group users containers data create,read,update,delete,grant
-knife acl bulk remove group users data '.*' create,read,update,delete,grant
+knife acl remove group users containers data create,update,delete,grant
+knife acl bulk remove group users data '.*' create,update,delete,grant
 
 
-knife acl remove group users containers environments create,read,update,delete,grant
-knife acl bulk remove group users environments '.*' create,read,update,delete,grant
+knife acl remove group users containers environments create,update,delete,grant
+knife acl bulk remove group users environments '.*' create,update,delete,grant
 
 
-knife acl remove group users containers nodes create,read,update,delete,grant
-knife acl bulk remove group users nodes '.*' create,read,update,delete,grant
+knife acl remove group users containers nodes create,update,delete,grant
+knife acl bulk remove group users nodes '.*' create,update,delete,grant
 
 
-knife acl remove group users containers roles create,read,update,delete,grant
-knife acl bulk remove group users roles '.*' create,read,update,delete,grant
+knife acl remove group users containers roles create,update,delete,grant
+knife acl bulk remove group users roles '.*' create,update,delete,grant
 ```
 
 #### Selectively Allow Access
 
-Now you can create a new group and manage its members with knife-acl or the Manage web interface.
+You can also create a new group and manage its members with knife-acl or the Manage web interface.
 
 Then add this group to the ACEs of all appropriate containers and/or objects according to your requirements.
 
