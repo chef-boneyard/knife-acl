@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README.md", "LICENSE" ]
   s.summary = "Knife plugin to manupulate Chef server access control lists"
   s.description = s.summary
-  s.author = "Seth Falcon"
+  s.authors = [ "Seth Falcon", "Jeremiah Snapp" ]
   s.email = "support@chef.io"
   s.homepage = "https://github.com/chef/knife-acl"
   s.require_path = 'lib'
