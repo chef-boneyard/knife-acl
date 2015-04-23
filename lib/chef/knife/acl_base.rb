@@ -1,6 +1,7 @@
 #
 # Author:: Steven Danna (steve@opscode.com)
-# Copyright:: Copyright 2011--2014 Chef Software, Inc.
+# Author:: Jeremiah Snapp (<jeremiah@chef.io>)
+# Copyright:: Copyright 2011--2015 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +21,8 @@ module OpscodeAcl
   module AclBase
 
     PERM_TYPES = %w(create read update delete grant)
-    ACTOR_TYPES = %w(client group)
-    OBJECT_TYPES = %w(clients groups containers data nodes roles cookbooks sandboxes environments)
+    MEMBER_TYPES = %w(client group user)
+    OBJECT_TYPES = %w(clients containers cookbooks data environments groups nodes roles)
     OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/
 
     def validate_object_type!(type)
@@ -38,35 +39,41 @@ module OpscodeAcl
       end
     end
 
-    def validate_actor_type!(type)
-      if ! ACTOR_TYPES.include?(type)
-        ui.fatal "Unknown actor type \"#{type}\". The following types are permitted: #{ACTOR_TYPES.join(', ')}"
+    def validate_member_type!(type)
+      if ! MEMBER_TYPES.include?(type)
+        ui.fatal "Unknown member type \"#{type}\". The following types are permitted: #{MEMBER_TYPES.join(', ')}"
         exit 1
       end
     end
 
-    def validate_actor_name!(name)
-      # Same rules apply to object's and actors
+    def validate_member_name!(name)
+      # Same rules apply to objects and members
       validate_object_name!(name)
     end
 
-    def validate_perm_type!(perm)
-      if ! PERM_TYPES.include?(perm)
-        ui.fatal "Invalid permission \"#{perm}\". The following permissions are permitted: #{PERM_TYPES.join(',')}"
-        exit 1
+    def validate_perm_type!(perms)
+      perms.split(',').each do |perm|
+        if ! PERM_TYPES.include?(perm)
+          ui.fatal "Invalid permission \"#{perm}\". The following permissions are permitted: #{PERM_TYPES.join(',')}"
+          exit 1
+        end
       end
-
     end
 
-    def validate_all_params!
-      # Helper method to valid parameters for commands that modify permisisons
-      # This assumes including class has the necessary accessors
-      # We the validation to ensure we can give the user more helpful error messages.
-      validate_perm_type!(perm)
-      validate_actor_type!(actor_type)
-      validate_actor_name!(actor_name)
-      validate_object_name!(object_name)
-      validate_object_type!(object_type)
+    def validate_member_exists!(member_type, member_name)
+      begin
+        true if rest.get_rest("#{member_type}s/#{member_name}")
+      rescue NameError
+        # ignore "NameError: uninitialized constant Chef::ApiClient" when finding a client
+        true
+      rescue
+        ui.fatal "#{member_type} '#{member_name}' does not exist"
+        exit 1
+      end
+    end
+
+    def is_usag?(gname)
+      gname.length == 32 && gname =~ /^[0-9a-f]+$/
     end
 
     def get_acl(object_type, object_name)
@@ -77,8 +84,84 @@ module OpscodeAcl
       get_acl(object_type, object_name)[perm]
     end
 
+    def add_to_acl!(member_type, member_name, object_type, object_name, perms)
+      acl = get_acl(object_type, object_name)
+      perms.split(',').each do |perm|
+        ui.msg "Adding '#{member_name}' to '#{perm}' ACE of '#{object_name}'"
+        ace = acl[perm]
+
+        case member_type
+        when "client", "user"
+          next if ace['actors'].include?(member_name)
+          ace['actors'] << member_name
+        when "group"
+          next if ace['groups'].include?(member_name)
+          ace['groups'] << member_name
+        end
+
+        update_ace!(object_type, object_name, perm, ace)
+      end
+    end
+
+    def remove_from_acl!(member_type, member_name, object_type, object_name, perms)
+      acl = get_acl(object_type, object_name)
+      perms.split(',').each do |perm|
+        ui.msg "Removing '#{member_name}' from '#{perm}' ACE of '#{object_name}'"
+        ace = acl[perm]
+
+        case member_type
+        when "client", "user"
+          next unless ace['actors'].include?(member_name)
+          ace['actors'].delete(member_name)
+        when "group"
+          next unless ace['groups'].include?(member_name)
+          ace['groups'].delete(member_name)
+        end
+
+        update_ace!(object_type, object_name, perm, ace)
+      end
+    end
+
     def update_ace!(object_type, object_name, ace_type, ace)
       rest.put_rest("#{object_type}/#{object_name}/_acl/#{ace_type}", ace_type => ace)
+    end
+
+    def add_to_group!(member_type, member_name, group_name)
+      validate_member_exists!(member_type, member_name)
+      existing_group = rest.get_rest("groups/#{group_name}")
+      ui.msg "Adding '#{member_name}' to '#{group_name}' group"
+      if !existing_group["#{member_type}s"].include?(member_name)
+        existing_group["#{member_type}s"] << member_name
+        new_group = {
+          "groupname" => existing_group["groupname"],
+          "orgname" => existing_group["orgname"],
+          "actors" => {
+            "users" => existing_group["users"],
+            "clients" => existing_group["clients"],
+            "groups" => existing_group["groups"]
+          }
+        }
+        rest.put_rest("groups/#{group_name}", new_group)
+      end
+    end
+
+    def remove_from_group!(member_type, member_name, group_name)
+      validate_member_exists!(member_type, member_name)
+      existing_group = rest.get_rest("groups/#{group_name}")
+      ui.msg "Removing '#{member_name}' from '#{group_name}' group"
+      if existing_group["#{member_type}s"].include?(member_name)
+        existing_group["#{member_type}s"].delete(member_name)
+        new_group = {
+          "groupname" => existing_group["groupname"],
+          "orgname" => existing_group["orgname"],
+          "actors" => {
+            "users" => existing_group["users"],
+            "clients" => existing_group["clients"],
+            "groups" => existing_group["groups"]
+          }
+        }
+        rest.put_rest("groups/#{group_name}", new_group)
+      end
     end
 
   end

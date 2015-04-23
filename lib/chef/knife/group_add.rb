@@ -1,5 +1,5 @@
 #
-# Author:: Seth Falcon (<seth@opscode.com>)
+# Author:: Seth Falcon (<seth@chef.io>)
 # Author:: Jeremiah Snapp (<jeremiah@chef.io>)
 # Copyright:: Copyright 2011--2015 Chef Software, Inc.
 # License:: Apache License, Version 2.0
@@ -18,21 +18,34 @@
 #
 
 module OpscodeAcl
-  class GroupList < Chef::Knife
+  class GroupAdd < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife group list"
+    banner "knife group add MEMBER_TYPE MEMBER_NAME GROUP_NAME"
 
     deps do
       include OpscodeAcl::AclBase
     end
 
     def run
-      groups = rest.get_rest("groups").keys.sort
-      ui.output(remove_usags(groups))
-    end
+      member_type, member_name, group_name = name_args
 
-    def remove_usags(groups)
-      groups.select { |gname| !is_usag?(gname) }
+      if name_args.length != 3
+        show_usage
+        ui.fatal "You must specify member type [client|group|user], member name and group name"
+        exit 1
+      end
+
+      validate_member_name!(group_name)
+      validate_member_type!(member_type)
+      validate_member_name!(member_name)
+
+      if group_name.downcase == "users"
+        ui.fatal "knife-acl can not manage members of the Users group"
+        ui.fatal "please read knife-acl's README.md for more information"
+        exit 1
+      end
+
+      add_to_group!(member_type, member_name, group_name)
     end
   end
 end

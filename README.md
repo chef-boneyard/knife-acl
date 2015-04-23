@@ -1,89 +1,174 @@
 # knife-acl
 
-# Description
+## Description
 
 This is a Chef Software, Inc.-supported knife plugin which provides some user/group
-ACL operations for Chef server. All commands assume a working knife
-configuration for an organization on a Chef server.
+ACL operations for Chef server.
 
-# User Specific Association Groups
+All commands assume a working knife configuration for an admin user of a Chef organization.
 
-User Specific Association Groups (USAGs) are a mechanism to grant access to
-organization objects to users such that it is possible to quickly revoke the
-access without touching all objects in the organization.
+Reference:
 
-Each USAG contains a single user. The USAG is then added to other groups or
-directly to the ACLs of an object as needed.
+1. [Chef Server Permissions](http://docs.chef.io/server/server_orgs.html#permissions)
+2. [Chef Server Groups](http://docs.chef.io/server/server_orgs.html#groups)
 
-When the user is dissociated from an organization only the user's USAG needs to
-be deleted thereby quickly revoking access to all objects in the organization.
-
-USAGs and their membership within other normal groups are not visible in the
-[management console's web interface](https://manage.chef.io).
-
-## STOP managing group membership with the web interface
-
-USAGs are currently the correct way to add/remove users to/from groups in an
-organization.
-
-**Be warned**, once you start managing a group's membership using `knife-acl`
-you should **avoid managing that group's membership using the [management
-console's web interface](https://manage.chef.io)**.
-
-You can add USAGs to a group using `knife-acl` but if you click "Save Group" in
-the web interface then all USAGs will be removed from the group erasing any
-`knife-acl` work that was done on the group. This will happen even if no
-changes were made to the group's members in the web interface.
-
-The "users" group is a special group. When a user is associated with an
-organization the user's USAG is automatically made a member of the
-"users" group. You can remove USAGs from the "users" group using `knife-acl`
-but if you click "Save Group" in the web interface then all USAGs in the
-organization will be added back to the "users" group erasing any `knife-acl`
-work that was done on the "users" group. This will happen even if no changes
-were made to the group's members in the web interface.
-
-# Example: Manage a read-only Group
-
-You can use these commands to manage a read-only group.  To do so:
-
-1. Run `knife actor map` to create/update a local actor map file
-   `actor-map.yaml`:
-
-        knife actor map
-
-2. Create a group that will hold read-only users:
-
-        knife group create read-only
-
-3. For each user you wish to have read only access as defined by
-   permissions given to the "read-only" group do the following:
-
-        knife group add actor read-only USER
-        knife group remove actor users USER
-
-   This adds the user to the "read-only" group and removes them from the
-   "users" group which has more permissions by default (users are
-   added to "users" when added to an organizaton).
-
-# Installation
+## Installation
 
 This knife plugin is packaged as a gem.  To install it, enter the
 following:
 
-## With [Chef DK](https://downloads.chef.io/chef-dk/)
+The 1.0.0.beta version of knife-acl is currently recommended so be sure
+to tell the gem command to install the prerelease.
 
-    chef gem install knife-acl
+#### ChefDK installed on a workstation
+    chef gem install knife-acl --pre
 
-## On the shell of a Chef server active backend
+#### Omnibus installed chef on a workstation
+    /opt/chef/embedded/bin/gem install knife-acl --pre
 
-As root:
+#### Gem installed chef on a workstation
+    gem install knife-acl --pre
 
-    /opt/opscode/embedded/bin/gem install knife-acl
+#### Opscode Enterprise Chef (OPC) Directly on the active backend
+as root:
 
-## With chef-client installed from a RubyGems
+    /opt/opscode/embedded/bin/gem install knife-acl --pre
 
-    gem install knife-acl
+### _Warning about Users group_
+
+The "Users" group is a special group and should not be managed with knife-acl.
+As such, knife-acl will give an error if either `knife acl group add user users USER`
+or `knife acl group remove user users USER` are run.
+
+### Chef Server Roles Based Access Control (RBAC) Summary
+
+In the context of the Chef Server's API a container is just the API endpoint used
+when creating a new object of a particular object type.
+
+For example, the container for creating client objects is called `clients` and
+the container for creating node objects is called `nodes`.
+
+Two containers are used when creating (uploading) cookbooks.
+The `cookbooks` and `sandboxes` containers.
+
+Here is a full list of the containers in a Chef Server.
+
+- clients
+- cookbooks
+- data
+- environments
+- groups
+- nodes
+- roles
+- sandboxes
+
+The permissions assigned to a container are inherited by the objects
+that the container creates. When a permission is changed on a container
+that change will only affect new objects. The change does not propagate to
+existing objects.
+
+For reference and restoral purposes the
+[Default Permissions for Containers](#default-permissions-for-containers) section
+of this document contains `knife-acl` commands that will set the default
+permissions for the admins, clients and users groups on all containers.
+These can be helpful if you need to restore container permissions back to their
+default values.
+
+#### Permissions Management Best Practice
+
+The best practice for managing permissions is to only add a group to an objects' permissions.
+Then you can simply add (or remove) users or clients to the group to give the user or client
+a particular set of permissions. This is much easier to maintain when compared to adding
+individual users or clients to each objects' permissions.
+
+To enforce this the `knife acl add` and `knife acl bulk add` commands can only add a group
+to an objects' permissions.
+
+If a group ever needs to be removed from the permissions of all objects the group can simply
+be deleted.
+
+#### Setup Default Read-Only Access for Non-admin Users
+
+The "Users" group by default provides regular (non-admin) users a lot of access to modify objects in
+the Chef Server.
+
+Removing the "Users" group from the "create", "update", "delete" and "grant" Access Control Entries (ACEs)
+of all objects and containers will create a default read-only access for non-admin users.
+
+To completely prevent non-admin users from accessing all objects and containers then also remove the
+"Users" group from the "read" ACE.
+
+Admin users will still have default admin access to all objects and containers.
+
+**NOTE:** Please note that currently the Chef Manage web UI will appear to allow read-only users to edit
+some objects. However, the changes are not actually saved and they disappear when the read-only
+user refreshes the page.
+
+```
+knife acl remove group users containers clients create,update,delete,grant
+knife acl bulk remove group users clients '.*' create,update,delete,grant
+
+
+knife acl remove group users containers sandboxes create,update,delete,grant
+knife acl remove group users containers cookbooks create,update,delete,grant
+knife acl bulk remove group users cookbooks '.*' create,update,delete,grant
+
+
+knife acl remove group users containers data create,update,delete,grant
+knife acl bulk remove group users data '.*' create,update,delete,grant
+
+
+knife acl remove group users containers environments create,update,delete,grant
+knife acl bulk remove group users environments '.*' create,update,delete,grant
+
+
+knife acl remove group users containers nodes create,update,delete,grant
+knife acl bulk remove group users nodes '.*' create,update,delete,grant
+
+
+knife acl remove group users containers roles create,update,delete,grant
+knife acl bulk remove group users roles '.*' create,update,delete,grant
+```
+
+#### Selectively Allow Access
+
+You can also create a new group and manage its members with knife-acl or the Manage web interface.
+
+Then add this group to the ACEs of all appropriate containers and/or objects according to your requirements.
+
+#### Create read-only group with read only access
+
+The following set of commands creates a group named `read-only` and
+gives it `read` access on all objects.
+
+```
+knife group create read-only
+
+
+knife acl add group read-only containers clients read
+knife acl bulk add group read-only clients '.*' read
+
+
+knife acl add group read-only containers sandboxes read
+knife acl add group read-only containers cookbooks read
+knife acl bulk add group read-only cookbooks '.*' read
+
+
+knife acl add group read-only containers data read
+knife acl bulk add group read-only data '.*' read
+
+
+knife acl add group read-only containers environments read
+knife acl bulk add group read-only environments '.*' read
+
+
+knife acl add group read-only containers nodes read
+knife acl bulk add group read-only nodes '.*' read
+
+
+knife acl add group read-only containers roles read
+knife acl bulk add group read-only roles '.*' read
+```
 
 # Subcommands
 
@@ -91,56 +176,48 @@ As root:
 
 Show a list of users associated with your organization
 
-## knife actor map
-
-Create a local map file named "actor-map.yaml" that maps users to their USAG
-and stores a list of clients.
-
-This command creates a local cache of the user to USAG mapping as well
-as a local cache of clients and is used by the following commands:
-
-- `knife group show`
-- `knife group add actor`
-- `knife group remove actor`
-
-## knife group create
-
-Create a new group.
-
 ## knife group list
 
 List groups in the organization.
 
-## knife group show GROUP
+## knife group create GROUP_NAME
 
-Show the details membership details for `GROUP`. If you have run
-`knife actor map`, the user map file will be used to annotate USAGs so
-you can see what user they represent.
+Create a new group `GROUP_NAME` to the organization.
 
-## knife group add actor GROUP ACTOR
+## knife group show GROUP_NAME
 
-Add ACTOR to GROUP.  ACTOR can be a user name or a client
-name. Requires an up-to-date actor map as created by `knife actor
-map`.  The user's USAG will be added as a subgroup of GROUP if ACTOR
-is a user.
+Show the membership details for `GROUP_NAME`.
 
-## knife group remove actor GROUP ACTOR
+## knife group add MEMBER_TYPE MEMBER_NAME GROUP_NAME
 
-Remove ACTOR from GROUP. Requires an up-to-date actor map as created by
-`knife actor map`.  The user's USAG will be removed from the subgroups
-of GROUP if ACTOR is a user.
+Add MEMBER_NAME to `GROUP_NAME`.
 
-## knife group destroy GROUP
+Valid `MEMBER_TYPE` values are
 
-Removes `GROUP` from the organization.  All members of the group (both
-actors and groups) remain in the system, only `GROUP` is removed.
+- client
+- group
+- user
+
+## knife group remove MEMBER_TYPE MEMBER_NAME GROUP_NAME
+
+Remove `MEMBER_NAME` from `GROUP_NAME`.
+
+See the `knife group add` documentation above for valid `MEMBER_TYPE` values.
+
+## knife group destroy GROUP_NAME
+
+Removes group `GROUP_NAME` from the organization.  All members of the group
+(clients, groups and users) remain in the system, only `GROUP_NAME` is removed.
+
+The `admins`, `billing-admins`, `clients` and `users` groups are special groups
+so knife-acl will not allow them to be destroyed.
 
 ## knife acl show OBJECT_TYPE OBJECT_NAME
 
 Shows the ACL for the specified object.  Objects are identified by the
 combination of their type and name.
 
-Valid `OBJECT_TYPE`s are
+Valid `OBJECT_TYPE` values are
 
 - clients
 - containers
@@ -156,14 +233,26 @@ named "web.example.com":
 
     knife acl show nodes web.example.com
 
-## knife acl add OBJECT_TYPE OBJECT_NAME PERM [group|client] NAME
+## knife acl add group GROUP_NAME OBJECT_TYPE OBJECT_NAME PERMS
 
-Add the group or client with NAME to the PERM access control entry of
-the object.  Objects are specified by the combination of
-their type and name.  See the `knife acl show` documentation above for
-the permitted types.
+The best practice is to only add groups to ACLs. To enforce this best practice
+the `knife acl add` command is only able to add groups to ACLs.
 
-Valid `PERM`s are:
+Add `GROUP_NAME` to the `PERMS` access control entry of the `OBJECT_NAME`.
+Objects are specified by the combination of their type and name.
+
+Valid `OBJECT_TYPE` values are
+
+- clients
+- containers
+- cookbooks
+- data
+- environments
+- groups
+- nodes
+- roles
+
+Valid `PERMS` are:
 
 - create
 - read
@@ -171,31 +260,139 @@ Valid `PERM`s are:
 - delete
 - grant
 
-For example, use the following command to give the superuser group
-the ability to delete the node called "api.example.com":
+Multiple `PERMS` can be given in a single command by separating them
+with a comma with no extra spaces.
 
-    knife acl add node api.exmaple.com delete group superusers
+For example, use the following command to give the superusers group
+the ability to delete and update the node called "web.example.com":
 
-## knife acl remove OBJECT_TYPE OBJECT_NAME PERM [group|client] NAME
+    knife acl add group superusers nodes web.example.com delete,update
 
-Remove group or client with NAME from the PERM access control entry of
-the specified object.  Objects are specified by the combination of
-their type and name.  See the `knife acl show` documentation above for
-the permitted types.  See the `knife acl add` documentation above for
-the permitted `PERMS`s.
+## knife acl bulk add group GROUP_NAME OBJECT_TYPE REGEX PERMS
 
-For example, use the following command to remove the superuser group's
-ability to delete the node called "api.example.com":
+The best practice is to only add groups to ACLs. To enforce this best practice
+the `knife acl bulk add` command is only able to add groups to ACLs.
 
-    knife acl remove node api.exmaple.com delete group superusers
+Add `GROUP_NAME` to the `PERMS` access control entry for each object in a
+set of objects of `OBJECT_TYPE`.
 
-## TODO
+The set of objects are specified by matching the objects' names with the
+given REGEX regular expression surrounded by quotes.
 
-- Feature: build group membership graph
-- Remove duplication in commands
-- Staleness detector for actor map
-- Improve error messages when actor map is missing
-- Don't save group if it will be a no-op
+See the `knife acl add` documentation above for valid `OBJECT_TYPE` and `PERMS` values.
+
+Appending `-y` or `--yes` to the `knife acl bulk add` command will run the command
+without any prompts for confirmation.
+
+For example, use the following command to give the superusers group the ability to
+delete and update all nodes matching the regular expression 'WIN-.*':
+
+    knife acl bulk add group superusers nodes 'WIN-.*' delete,update --yes
+
+## knife acl remove MEMBER_TYPE MEMBER_NAME OBJECT_TYPE OBJECT_NAME PERMS
+
+Remove `MEMBER_NAME` from the `PERMS` access control entry of `OBJECT_NAME`.
+Objects are specified by the combination of their type and name.
+
+Valid `MEMBER_TYPE` values are
+
+- client
+- group
+- user
+
+Valid `OBJECT_TYPE` values are
+
+- clients
+- containers
+- cookbooks
+- data
+- environments
+- groups
+- nodes
+- roles
+
+Valid `PERMS` are:
+
+- create
+- read
+- update
+- delete
+- grant
+
+Multiple `PERMS` can be given in a single command by separating them
+with a comma with no extra spaces.
+
+For example, use the following command to remove the superusers group from the delete and
+update access control entries for the node called "web.example.com":
+
+    knife acl remove group superusers nodes web.example.com delete,update
+
+## knife acl bulk remove MEMBER_TYPE MEMBER_NAME OBJECT_TYPE REGEX PERMS
+
+Remove `MEMBER_NAME` from the `PERMS` access control entry for each object in a
+set of objects of `OBJECT_TYPE`.
+
+The set of objects are specified by matching the objects' names with the
+given REGEX regular expression surrounded by quotes.
+
+See the `knife acl remove` documentation above for valid `MEMBER_TYPE`, `OBJECT_TYPE` and `PERMS` values.
+
+Appending `-y` or `--yes` to the `knife acl bulk add` command will run the command
+without any prompts for confirmation.
+
+For example, use the following command to remove the superusers group from the delete and
+update access control entries for all nodes matching the regular expression 'WIN-.*':
+
+    knife acl bulk remove group superusers nodes 'WIN-.*' delete,update --yes
+
+## Default Permissions for Containers
+
+The following commands will set the default permissions for the
+admins, clients and users groups on all containers. These can
+be helpful if you need to restore container permissions back to their
+default values.
+
+```
+knife acl add group admins containers clients create,read,update,delete,grant
+knife acl remove group clients containers clients create,read,update,delete,grant
+knife acl add group users containers clients read,delete
+knife acl remove group users containers clients create,update,grant
+
+knife acl add group admins containers cookbooks create,read,update,delete,grant
+knife acl add group clients containers cookbooks read
+knife acl remove group clients containers cookbooks create,update,delete,grant
+knife acl add group users containers cookbooks create,read,update,delete
+knife acl remove group users containers cookbooks grant
+
+knife acl add group admins containers data create,read,update,delete,grant
+knife acl add group clients containers data read
+knife acl remove group clients containers data create,update,delete,grant
+knife acl add group users containers data create,read,update,delete
+knife acl remove group users containers data grant
+
+knife acl add group admins containers environments create,read,update,delete,grant
+knife acl add group clients containers environments read
+knife acl remove group clients containers environments create,update,delete,grant
+knife acl add group users containers environments create,read,update,delete
+knife acl remove group users containers environments grant
+
+knife acl add group admins containers nodes create,read,update,delete,grant
+knife acl add group clients containers nodes create,read
+knife acl remove group clients containers nodes update,delete,grant
+knife acl add group users containers nodes create,read,update,delete
+knife acl remove group users containers nodes grant
+
+knife acl add group admins containers roles create,read,update,delete,grant
+knife acl add group clients containers roles read
+knife acl remove group clients containers roles create,update,delete,grant
+knife acl add group users containers roles create,read,update,delete
+knife acl remove group users containers roles grant
+
+knife acl add group admins containers sandboxes create,read,update,delete,grant
+knife acl remove group clients containers sandboxes create,read,update,delete,grant
+knife acl add group users containers sandboxes create
+knife acl remove group users containers sandboxes read,update,delete,grant
+```
 
 ## LICENSE
 
@@ -206,6 +403,7 @@ Copyright 2013-2015 Chef Software, Inc.
 |||
 | ------------- |-------------:|
 | Author      |Seth Falcon (seth@chef.io)|
+| Author      |Jeremiah Snapp (jeremiah@chef.io)|
 | Copyright  |Copyright (c) 2013-2015 Chef Software, Inc.|
 | License     |Apache License, Version 2.0|
 

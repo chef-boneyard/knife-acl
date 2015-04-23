@@ -1,6 +1,7 @@
 #
 # Author:: Seth Falcon (<seth@opscode.com>)
-# Copyright:: Copyright 2011--2014 Chef Software, Inc.
+# Author:: Jeremiah Snapp (<jeremiah@chef.io>)
+# Copyright:: Copyright 2011--2015 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,8 +27,7 @@ module OpscodeAcl
     end
 
     def run
-      chef_rest = Chef::REST.new(Chef::Config[:chef_server_url])
-      users = chef_rest.get_rest("users").map { |u| u["user"]["username"] }
+      users = rest.get_rest("users").map { |u| u["user"]["username"] }
       pp users.sort
     end
   end

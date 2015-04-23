@@ -28,7 +28,7 @@ module OpscodeAcl
     def run
       object_type, object_name = name_args
 
-      if ! object_name || ! object_type
+      if name_args.length != 2
         show_usage
         ui.fatal "You must specify an object type and object name"
         exit 1

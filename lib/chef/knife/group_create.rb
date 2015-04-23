@@ -1,6 +1,7 @@
 #
 # Author:: Seth Falcon (<seth@opscode.com>)
-# Copyright:: Copyright 2011--2014 Chef Software, Inc.
+# Author:: Jeremiah Snapp (<jeremiah@chef.io>)
+# Copyright:: Copyright 2011--2015 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,21 +20,25 @@
 module OpscodeAcl
   class GroupCreate < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner "knife group create GROUP"
-    
+    banner "knife group create GROUP_NAME"
+
     deps do
-      require 'yaml'
+      include OpscodeAcl::AclBase
     end
 
     def run
       group_name = name_args[0]
-      if !group_name || group_name.empty?
-        ui.error "must specify a group name"
+
+      if name_args.length != 1
+        show_usage
+        ui.fatal "You must specify group name"
         exit 1
       end
-      group = rest.post_rest("groups", {:groupname => group_name})
-      ui.output group
+
+      validate_member_name!(group_name)
+
+      ui.msg "Creating '#{group_name}' group"
+      rest.post_rest("groups", {:groupname => group_name})
     end
   end
 end
-

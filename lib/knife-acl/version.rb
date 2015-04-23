@@ -1,3 +1,3 @@
 module KnifeACL
-  VERSION = "0.0.12"
+  VERSION = "1.0.0.beta.1"
 end
