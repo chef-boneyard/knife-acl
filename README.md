@@ -12,27 +12,14 @@ Reference:
 1. [Chef Server Permissions](http://docs.chef.io/server/server_orgs.html#permissions)
 2. [Chef Server Groups](http://docs.chef.io/server/server_orgs.html#groups)
 
-## Installation
-
-This knife plugin is packaged as a gem.  To install it, enter the
-following:
+### Installation
 
 The 1.0.0.beta version of knife-acl is currently recommended so be sure
 to tell the gem command to install the prerelease.
 
-### With [Chef DK](https://downloads.chef.io/chef-dk/)
+Install into [Chef DK](https://downloads.chef.io/chef-dk/).
 
     chef gem install knife-acl --pre
-
-### On the shell of a Chef server active backend
-
-As root:
-
-    /opt/opscode/embedded/bin/gem install knife-acl --pre
-
-### With chef-client installed from a RubyGems
-
-    gem install knife-acl --pre
 
 ### _Warning about Users group_
 
