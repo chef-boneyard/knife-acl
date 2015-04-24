@@ -20,19 +20,19 @@ following:
 The 1.0.0.beta version of knife-acl is currently recommended so be sure
 to tell the gem command to install the prerelease.
 
-#### ChefDK installed on a workstation
+### With [Chef DK](https://downloads.chef.io/chef-dk/)
+
     chef gem install knife-acl --pre
 
-#### Omnibus installed chef on a workstation
-    /opt/chef/embedded/bin/gem install knife-acl --pre
+### On the shell of a Chef server active backend
 
-#### Gem installed chef on a workstation
-    gem install knife-acl --pre
-
-#### Opscode Enterprise Chef (OPC) Directly on the active backend
-as root:
+As root:
 
     /opt/opscode/embedded/bin/gem install knife-acl --pre
+
+### With chef-client installed from a RubyGems
+
+    gem install knife-acl --pre
 
 ### _Warning about Users group_
 
