@@ -9,8 +9,9 @@ All commands assume a working knife configuration for an admin user of a Chef or
 
 Reference:
 
-1. [Chef Server Permissions](http://docs.chef.io/server/server_orgs.html#permissions)
-2. [Chef Server Groups](http://docs.chef.io/server/server_orgs.html#groups)
+1. [Chef Server Permissions PDF](https://github.com/chef/chef-server/blob/master/doc/ChefServerPermissions_v1.3.pdf)
+2. [Chef Server Permissions Docs](http://docs.chef.io/server/server_orgs.html#permissions)
+3. [Chef Server Groups Docs](http://docs.chef.io/server/server_orgs.html#groups)
 
 ### Installation
 
