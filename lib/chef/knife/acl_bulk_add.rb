@@ -31,12 +31,12 @@ module OpscodeAcl
 
       if name_args.length != 5
         show_usage
-        ui.fatal "You must specify the member type [group], member name, object type, object name REGEX and perms"
+        ui.fatal "You must specify the member type [client|group], member name, object type, object name REGEX and perms"
         exit 1
       end
 
-      unless member_type == 'group'
-        ui.fatal "ERROR: To enforce best practice, knife-acl can only add a group to an ACL."
+      unless %w(client group).include?(member_type)
+        ui.fatal "ERROR: To enforce best practice, knife-acl can only add a client or a group to an ACL."
         ui.fatal "       See the knife-acl README for more information."
         exit 1
       end

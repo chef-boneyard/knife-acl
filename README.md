@@ -64,12 +64,13 @@ default values.
 
 #### Permissions Management Best Practice
 
-The best practice for managing permissions is to only add a group to an objects' permissions.
-Then you can simply add (or remove) users or clients to the group to give the user or client
-a particular set of permissions. This is much easier to maintain when compared to adding
-individual users or clients to each objects' permissions.
+The best practice for managing permissions is to only add clients and groups to an objects' permissions.
 
-To enforce this the `knife acl add` and `knife acl bulk add` commands can only add a group
+Adding a user to an objects' permissions is possible by first adding the group to the permissions and
+then adding the user to the group. This is much easier to maintain when compared to adding
+individual users to each objects' permissions.
+
+To enforce this the `knife acl add` and `knife acl bulk add` commands can only add a client or a group
 to an objects' permissions.
 
 If a group ever needs to be removed from the permissions of all objects the group can simply
@@ -221,12 +222,17 @@ named "web.example.com":
 
     knife acl show nodes web.example.com
 
-## knife acl add group GROUP_NAME OBJECT_TYPE OBJECT_NAME PERMS
+## knife acl add MEMBER_TYPE MEMBER_NAME OBJECT_TYPE OBJECT_NAME PERMS
 
-The best practice is to only add groups to ACLs. To enforce this best practice
-the `knife acl add` command is only able to add groups to ACLs.
+The best practice is to only add clients and groups to ACLs. To enforce this best practice
+the `knife acl add` command is only able to add a client or a group to ACLs.
 
-Add `GROUP_NAME` to the `PERMS` access control entry of the `OBJECT_NAME`.
+Valid `MEMBER_TYPE` values are
+
+- client
+- group
+
+Add `MEMBER_NAME` to the `PERMS` access control entry of `OBJECT_NAME`.
 Objects are specified by the combination of their type and name.
 
 Valid `OBJECT_TYPE` values are
@@ -256,12 +262,17 @@ the ability to delete and update the node called "web.example.com":
 
     knife acl add group superusers nodes web.example.com delete,update
 
-## knife acl bulk add group GROUP_NAME OBJECT_TYPE REGEX PERMS
+## knife acl bulk add MEMBER_TYPE MEMBER_NAME OBJECT_TYPE REGEX PERMS
 
-The best practice is to only add groups to ACLs. To enforce this best practice
-the `knife acl bulk add` command is only able to add groups to ACLs.
+The best practice is to only add clients and groups to ACLs. To enforce this best practice
+the `knife acl bulk add` command is only able to add a client or a group to ACLs.
 
-Add `GROUP_NAME` to the `PERMS` access control entry for each object in a
+Valid `MEMBER_TYPE` values are
+
+- client
+- group
+
+Add `MEMBER_NAME` to the `PERMS` access control entry for each object in a
 set of objects of `OBJECT_TYPE`.
 
 The set of objects are specified by matching the objects' names with the
