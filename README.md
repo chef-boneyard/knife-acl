@@ -15,12 +15,9 @@ Reference:
 
 ### Installation
 
-The 1.0.0.beta version of knife-acl is currently recommended so be sure
-to tell the gem command to install the prerelease.
-
 Install into [Chef DK](https://downloads.chef.io/chef-dk/).
 
-    chef gem install knife-acl --pre
+    chef gem install knife-acl
 
 ### _Warning about Users group_
 
