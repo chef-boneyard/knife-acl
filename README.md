@@ -213,6 +213,8 @@ Valid `OBJECT_TYPE` values are
 - groups
 - nodes
 - roles
+- policies
+- policy_groups
 
 For example, use the following command to obtain the ACL for a node
 named "web.example.com":
@@ -242,6 +244,8 @@ Valid `OBJECT_TYPE` values are
 - groups
 - nodes
 - roles
+- policies
+- policy_groups
 
 Valid `PERMS` are:
 
@@ -306,6 +310,8 @@ Valid `OBJECT_TYPE` values are
 - groups
 - nodes
 - roles
+- policies
+- policy_groups
 
 Valid `PERMS` are:
 
