@@ -44,6 +44,8 @@ Here is a full list of the containers in a Chef Server.
 - environments
 - groups
 - nodes
+- policies
+- policy_groups
 - roles
 - sandboxes
 
@@ -112,6 +114,14 @@ knife acl remove group users containers nodes create,update,delete,grant
 knife acl bulk remove group users nodes '.*' create,update,delete,grant
 
 
+knife acl remove group users containers policies create,update,delete,grant
+knife acl bulk remove group users policies '.*' create,update,delete,grant
+
+
+knife acl remove group users containers policy_groups create,update,delete,grant
+knife acl bulk remove group users policy_groups '.*' create,update,delete,grant
+
+
 knife acl remove group users containers roles create,update,delete,grant
 knife acl bulk remove group users roles '.*' create,update,delete,grant
 ```
@@ -150,6 +160,14 @@ knife acl bulk add group read-only environments '.*' read
 
 knife acl add group read-only containers nodes read
 knife acl bulk add group read-only nodes '.*' read
+
+
+knife acl add group read-only containers policies read
+knife acl bulk add group read-only policies '.*' read
+
+
+knife acl add group read-only containers policy_groups read
+knife acl bulk add group read-only policy_groups '.*' read
 
 
 knife acl add group read-only containers roles read
@@ -212,6 +230,8 @@ Valid `OBJECT_TYPE` values are
 - environments
 - groups
 - nodes
+- policies
+- policy_groups
 - roles
 
 For example, use the following command to obtain the ACL for a node
@@ -241,6 +261,8 @@ Valid `OBJECT_TYPE` values are
 - environments
 - groups
 - nodes
+- policies
+- policy_groups
 - roles
 
 Valid `PERMS` are:
@@ -305,6 +327,8 @@ Valid `OBJECT_TYPE` values are
 - environments
 - groups
 - nodes
+- policies
+- policy_groups
 - roles
 
 Valid `PERMS` are:
