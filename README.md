@@ -402,6 +402,18 @@ knife acl remove group clients containers nodes update,delete,grant
 knife acl add group users containers nodes create,read,update,delete
 knife acl remove group users containers nodes grant
 
+knife acl add group admins containers policies create,read,update,delete,grant
+knife acl add group clients containers policies read
+knife acl remove group clients containers policies create,update,delete,grant
+knife acl add group users containers policies create,read,update,delete
+knife acl remove group users containers policies grant
+
+knife acl add group admins containers policy_groups create,read,update,delete,grant
+knife acl add group clients containers policy_groups read
+knife acl remove group clients containers policy_groups create,update,delete,grant
+knife acl add group users containers policy_groups create,read,update,delete
+knife acl remove group users containers policy_groups grant
+
 knife acl add group admins containers roles create,read,update,delete,grant
 knife acl add group clients containers roles read
 knife acl remove group clients containers roles create,update,delete,grant
