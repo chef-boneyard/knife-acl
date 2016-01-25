@@ -23,6 +23,7 @@ module OpscodeAcl
     banner "knife group create GROUP_NAME"
 
     deps do
+      require 'chef/knife/acl_base'
       include OpscodeAcl::AclBase
     end
 

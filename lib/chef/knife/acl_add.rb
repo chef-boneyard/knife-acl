@@ -23,6 +23,7 @@ module OpscodeAcl
     banner "knife acl add MEMBER_TYPE MEMBER_NAME OBJECT_TYPE OBJECT_NAME PERMS"
 
     deps do
+      require 'chef/knife/acl_base'
       include OpscodeAcl::AclBase
     end
 

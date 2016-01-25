@@ -20,10 +20,10 @@
 module OpscodeAcl
   module AclBase
 
-    PERM_TYPES = %w(create read update delete grant)
-    MEMBER_TYPES = %w(client group user)
-    OBJECT_TYPES = %w(clients containers cookbooks data environments groups nodes roles policies policy_groups)
-    OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/
+    PERM_TYPES = %w(create read update delete grant) unless defined? PERM_TYPES
+    MEMBER_TYPES = %w(client group user) unless defined? MEMBER_TYPES
+    OBJECT_TYPES = %w(clients containers cookbooks data environments groups nodes roles policies policy_groups) unless defined? OBJECT_TYPES
+    OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/ unless defined? OBJECT_NAME_SPEC
 
     def validate_object_type!(type)
       if ! OBJECT_TYPES.include?(type)
