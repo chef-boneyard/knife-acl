@@ -23,6 +23,7 @@ module OpscodeAcl
     banner "knife group remove MEMBER_TYPE MEMBER_NAME GROUP_NAME"
 
     deps do
+      require 'chef/knife/acl_base'
       include OpscodeAcl::AclBase
     end
 
