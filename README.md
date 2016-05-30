@@ -75,104 +75,14 @@ to an objects' permissions.
 If a group ever needs to be removed from the permissions of all objects the group can simply
 be deleted.
 
-#### Setup Default Read-Only Access for Non-admin Users
+## Example use cases
 
-The "Users" group by default provides regular (non-admin) users a lot of access to modify objects in
-the Chef Server.
+The following documents show the `knife acl` commands to address some commmon use cases:
 
-Removing the "Users" group from the "create", "update", "delete" and "grant" Access Control Entries (ACEs)
-of all objects and containers will create a default read-only access for non-admin users.
-
-To completely prevent non-admin users from accessing all objects and containers then also remove the
-"Users" group from the "read" ACE.
-
-Admin users will still have default admin access to all objects and containers.
-
-**NOTE:** Please note that currently the Chef Manage web UI will appear to allow read-only users to edit
-some objects. However, the changes are not actually saved and they disappear when the read-only
-user refreshes the page.
-
-```
-knife acl remove group users containers clients create,update,delete,grant
-knife acl bulk remove group users clients '.*' create,update,delete,grant
-
-
-knife acl remove group users containers sandboxes create,update,delete,grant
-knife acl remove group users containers cookbooks create,update,delete,grant
-knife acl bulk remove group users cookbooks '.*' create,update,delete,grant
-
-
-knife acl remove group users containers data create,update,delete,grant
-knife acl bulk remove group users data '.*' create,update,delete,grant
-
-
-knife acl remove group users containers environments create,update,delete,grant
-knife acl bulk remove group users environments '.*' create,update,delete,grant
-
-
-knife acl remove group users containers nodes create,update,delete,grant
-knife acl bulk remove group users nodes '.*' create,update,delete,grant
-
-
-knife acl remove group users containers policies create,update,delete,grant
-knife acl bulk remove group users policies '.*' create,update,delete,grant
-
-
-knife acl remove group users containers policy_groups create,update,delete,grant
-knife acl bulk remove group users policy_groups '.*' create,update,delete,grant
-
-
-knife acl remove group users containers roles create,update,delete,grant
-knife acl bulk remove group users roles '.*' create,update,delete,grant
-```
-
-#### Selectively Allow Access
-
-You can also create a new group and manage its members with knife-acl or the Manage web interface.
-
-Then add this group to the ACEs of all appropriate containers and/or objects according to your requirements.
-
-#### Create read-only group with read only access
-
-The following set of commands creates a group named `read-only` and
-gives it `read` access on all objects.
-
-```
-knife group create read-only
-
-
-knife acl add group read-only containers clients read
-knife acl bulk add group read-only clients '.*' read
-
-
-knife acl add group read-only containers sandboxes read
-knife acl add group read-only containers cookbooks read
-knife acl bulk add group read-only cookbooks '.*' read
-
-
-knife acl add group read-only containers data read
-knife acl bulk add group read-only data '.*' read
-
-
-knife acl add group read-only containers environments read
-knife acl bulk add group read-only environments '.*' read
-
-
-knife acl add group read-only containers nodes read
-knife acl bulk add group read-only nodes '.*' read
-
-
-knife acl add group read-only containers policies read
-knife acl bulk add group read-only policies '.*' read
-
-
-knife acl add group read-only containers policy_groups read
-knife acl bulk add group read-only policy_groups '.*' read
-
-
-knife acl add group read-only containers roles read
-knife acl bulk add group read-only roles '.*' read
-```
+* [Setup default read-only access for non-admin users](./use_cases/default_readonly_for_admins.md)
+* [Create a new read-only group](./use_cases/create_readonly_group.md)
+* [Reset ChefServer to default permission setup](./use_cases/default_server_permissions.md)
+* [Enable nodes/client to update data bags](./use_cases/databags.md)
 
 # Subcommands
 
@@ -365,66 +275,6 @@ update access control entries for all nodes matching the regular expression 'WIN
 
     knife acl bulk remove group superusers nodes 'WIN-.*' delete,update --yes
 
-## Default Permissions for Containers
-
-The following commands will set the default permissions for the
-admins, clients and users groups on all containers. These can
-be helpful if you need to restore container permissions back to their
-default values.
-
-```
-knife acl add group admins containers clients create,read,update,delete,grant
-knife acl remove group clients containers clients create,read,update,delete,grant
-knife acl add group users containers clients read,delete
-knife acl remove group users containers clients create,update,grant
-
-knife acl add group admins containers cookbooks create,read,update,delete,grant
-knife acl add group clients containers cookbooks read
-knife acl remove group clients containers cookbooks create,update,delete,grant
-knife acl add group users containers cookbooks create,read,update,delete
-knife acl remove group users containers cookbooks grant
-
-knife acl add group admins containers data create,read,update,delete,grant
-knife acl add group clients containers data read
-knife acl remove group clients containers data create,update,delete,grant
-knife acl add group users containers data create,read,update,delete
-knife acl remove group users containers data grant
-
-knife acl add group admins containers environments create,read,update,delete,grant
-knife acl add group clients containers environments read
-knife acl remove group clients containers environments create,update,delete,grant
-knife acl add group users containers environments create,read,update,delete
-knife acl remove group users containers environments grant
-
-knife acl add group admins containers nodes create,read,update,delete,grant
-knife acl add group clients containers nodes create,read
-knife acl remove group clients containers nodes update,delete,grant
-knife acl add group users containers nodes create,read,update,delete
-knife acl remove group users containers nodes grant
-
-knife acl add group admins containers policies create,read,update,delete,grant
-knife acl add group clients containers policies read
-knife acl remove group clients containers policies create,update,delete,grant
-knife acl add group users containers policies create,read,update,delete
-knife acl remove group users containers policies grant
-
-knife acl add group admins containers policy_groups create,read,update,delete,grant
-knife acl add group clients containers policy_groups read
-knife acl remove group clients containers policy_groups create,update,delete,grant
-knife acl add group users containers policy_groups create,read,update,delete
-knife acl remove group users containers policy_groups grant
-
-knife acl add group admins containers roles create,read,update,delete,grant
-knife acl add group clients containers roles read
-knife acl remove group clients containers roles create,update,delete,grant
-knife acl add group users containers roles create,read,update,delete
-knife acl remove group users containers roles grant
-
-knife acl add group admins containers sandboxes create,read,update,delete,grant
-knife acl remove group clients containers sandboxes create,read,update,delete,grant
-knife acl add group users containers sandboxes create
-knife acl remove group users containers sandboxes read,update,delete,grant
-```
 
 ## LICENSE
 
