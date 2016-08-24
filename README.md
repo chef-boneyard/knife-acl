@@ -402,6 +402,11 @@ knife acl remove group clients containers environments create,update,delete,gran
 knife acl add group users containers environments create,read,update,delete
 knife acl remove group users containers environments grant
 
+knife acl add group admins containers groups create,read,update,delete,grant
+knife acl remove group clients containers groups create,read,update,delete,grant
+knife acl add group users containers groups read
+knife acl remove group users containers groups create,update,delete,grant
+
 knife acl add group admins containers nodes create,read,update,delete,grant
 knife acl add group clients containers nodes create,read
 knife acl remove group clients containers nodes update,delete,grant
