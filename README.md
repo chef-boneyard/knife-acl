@@ -378,6 +378,12 @@ knife acl remove group clients containers clients create,read,update,delete,gran
 knife acl add group users containers clients read,delete
 knife acl remove group users containers clients create,update,grant
 
+knife acl add group admins containers cookbook_artifacts create,read,update,delete,grant
+knife acl add group clients containers cookbook_artifacts read
+knife acl remove group clients containers cookbook_artifacts create,update,delete,grant
+knife acl add group users containers cookbook_artifacts create,read,update,delete
+knife acl remove group users containers cookbook_artifacts grant
+
 knife acl add group admins containers cookbooks create,read,update,delete,grant
 knife acl add group clients containers cookbooks read
 knife acl remove group clients containers cookbooks create,update,delete,grant
