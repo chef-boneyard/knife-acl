@@ -77,7 +77,7 @@ module OpscodeAcl
     end
 
     def get_acl(object_type, object_name)
-      rest.get_rest("#{object_type}/#{object_name}/_acl")
+      rest.get_rest("#{object_type}/#{object_name}/_acl?detail=granular")
     end
 
     def get_ace(object_type, object_name, perm)
@@ -92,8 +92,10 @@ module OpscodeAcl
 
         case member_type
         when "client", "user"
-          next if ace['actors'].include?(member_name)
-          ace['actors'] << member_name
+          key = "#{member_type}s"
+          key = 'actors' unless ace.has_key? key
+          next if ace[key].include?(member_name)
+          ace[key] << member_name
         when "group"
           next if ace['groups'].include?(member_name)
           ace['groups'] << member_name
@@ -111,8 +113,10 @@ module OpscodeAcl
 
         case member_type
         when "client", "user"
-          next unless ace['actors'].include?(member_name)
-          ace['actors'].delete(member_name)
+          key = "#{member_type}s"
+          key = 'actors' unless ace.has_key? key
+          next unless ace[key].include?(member_name)
+          ace[key].delete(member_name)
         when "group"
           next unless ace['groups'].include?(member_name)
           ace['groups'].delete(member_name)

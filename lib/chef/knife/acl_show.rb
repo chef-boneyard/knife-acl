@@ -38,6 +38,14 @@ module OpscodeAcl
       validate_object_type!(object_type)
       validate_object_name!(object_name)
       acl = get_acl(object_type, object_name)
+      PERM_TYPES.each do |perm|
+        # Filter out the actors field if we have
+        # users and clients.  Note that if one is present,
+        # both will be - but we're checking both for completeness.
+        if acl[perm].has_key?('users') && acl[perm].has_key?('clients')
+          acl[perm].delete 'actors'
+        end
+      end
       ui.output acl
     end
   end
