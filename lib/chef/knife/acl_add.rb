@@ -27,6 +27,13 @@ module OpscodeAcl
       include OpscodeAcl::AclBase
     end
 
+    option :force,
+    :short => "-f",
+    :long => "--force",
+    :description => "Force adding users to acls, against best practice",
+    :boolean => true | false,
+    :default => false
+
     def run
       member_type, member_name, object_type, object_name, perms = name_args
 
@@ -36,7 +43,7 @@ module OpscodeAcl
         exit 1
       end
 
-      unless %w(client group).include?(member_type)
+      unless %w(client group).include?(member_type) || config[:force]
         ui.fatal "ERROR: To enforce best practice, knife-acl can only add a client or a group to an ACL."
         ui.fatal "       See the knife-acl README for more information."
         exit 1
