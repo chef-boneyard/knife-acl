@@ -92,6 +92,12 @@ module OpscodeAcl
 
         case member_type
         when "client", "user"
+          # Our PUT body depends on the type of reply we get from _acl?detail=granular
+          # When the server replies with json attributes  'users' and 'clients',
+          # we'll want to modify entries under the same keys they arrived.- their presence
+          # in the body tells us that CS will accept them in a PUT.
+          # Older version of chef-server will continue to use 'actors' for a combined list
+          # and expect the same in the body.
           key = "#{member_type}s"
           key = 'actors' unless ace.has_key? key
           next if ace[key].include?(member_name)
