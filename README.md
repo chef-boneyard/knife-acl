@@ -14,11 +14,7 @@ Reference:
 
 ### Installation
 
-Install into [Chef DK](https://downloads.chef.io/chef-dk/).
-
-```
-chef gem install knife-acl
-```
+This gem already ships as part of Chef-DK / Workstation.
 
 ### _Warning about Users group_
 
