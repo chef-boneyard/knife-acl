@@ -410,8 +410,9 @@ For information on contributing to this project see <https://github.com/chef/che
 
 Unless otherwise specified all works in this repository are
 
-Copyright 2013-2016 Chef Software, Inc.
+Copyright 2013-2018 Chef Software, Inc.
 
+```text
 |         |
 --------- | --------------------------------------------:
 Author    |                  Seth Falcon (seth@chef.io)
@@ -419,7 +420,6 @@ Author    |           Jeremiah Snapp (jeremiah@chef.io)
 Copyright | Copyright (c) 2013-2015 Chef Software, Inc.
 License   |                 Apache License, Version 2.0
 
-```text
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
