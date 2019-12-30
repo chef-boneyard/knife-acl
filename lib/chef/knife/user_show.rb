@@ -19,16 +19,16 @@
 module OpscodeAcl
   class UserShow < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner 'knife user show [USERNAME]'
+    banner "knife user show [USERNAME]"
 
     # ui.format_for_display has logic to handle displaying
     # any attributes set in the config[:attribute] Array.
     attrs_to_show = []
     option :attribute,
-    :short => "-a [ATTR]",
-    :long => "--attribute [ATTR]",
-    :proc => lambda {|val| attrs_to_show << val},
-    :description => "Show attribute ATTR. Use multiple times to show multiple attributes."
+      short: "-a [ATTR]",
+      long: "--attribute [ATTR]",
+      proc: lambda { |val| attrs_to_show << val },
+      description: "Show attribute ATTR. Use multiple times to show multiple attributes."
 
     def run
       if name_args.length < 1

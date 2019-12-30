@@ -23,7 +23,7 @@ module OpscodeAcl
     banner "knife user list"
 
     deps do
-      require 'pp'
+      require "pp"
     end
 
     def run
@@ -32,4 +32,3 @@ module OpscodeAcl
     end
   end
 end
-

@@ -22,7 +22,7 @@ module OpscodeAcl
     banner "knife acl show OBJECT_TYPE OBJECT_NAME"
 
     deps do
-      require_relative 'acl_base'
+      require_relative "acl_base"
       include OpscodeAcl::AclBase
     end
 
@@ -42,8 +42,8 @@ module OpscodeAcl
         # Filter out the actors field if we have
         # users and clients.  Note that if one is present,
         # both will be - but we're checking both for completeness.
-        if acl[perm].has_key?('users') && acl[perm].has_key?('clients')
-          acl[perm].delete 'actors'
+        if acl[perm].key?("users") && acl[perm].key?("clients")
+          acl[perm].delete "actors"
         end
       end
       ui.output acl

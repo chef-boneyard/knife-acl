@@ -23,7 +23,7 @@ module OpscodeAcl
     banner "knife group create GROUP_NAME"
 
     deps do
-      require_relative 'acl_base'
+      require_relative "acl_base"
       include OpscodeAcl::AclBase
     end
 
@@ -39,7 +39,7 @@ module OpscodeAcl
       validate_member_name!(group_name)
 
       ui.msg "Creating '#{group_name}' group"
-      rest.post_rest("groups", {:groupname => group_name})
+      rest.post_rest("groups", { groupname: group_name })
     end
   end
 end

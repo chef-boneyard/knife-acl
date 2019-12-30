@@ -19,10 +19,9 @@
 module OpscodeAcl
   class UserInviteAdd < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner 'knife user invite add USERNAMES'
+    banner "knife user invite add USERNAMES"
 
     def run
-
       if name_args.length < 1
         show_usage
         ui.fatal("You must specify a username.")
@@ -32,7 +31,7 @@ module OpscodeAcl
       users = name_args
       api_endpoint = "association_requests/"
       users.each do |u|
-        body = {:user => u}
+        body = { user: u }
         rest.post_rest(api_endpoint, body)
       end
     end

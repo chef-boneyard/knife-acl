@@ -23,7 +23,7 @@ module OpscodeAcl
     banner "knife group list"
 
     deps do
-      require_relative 'acl_base'
+      require_relative "acl_base"
       include OpscodeAcl::AclBase
     end
 
