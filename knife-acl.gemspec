@@ -1,8 +1,8 @@
-$:.unshift(File.dirname(__FILE__) + '/lib')
-require 'knife-acl/version'
+$:.unshift(File.dirname(__FILE__) + "/lib")
+require "knife-acl/version"
 
 Gem::Specification.new do |s|
-  s.name = 'knife-acl'
+  s.name = "knife-acl"
   s.version = KnifeACL::VERSION
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ["README.md", "LICENSE" ]
@@ -11,6 +11,6 @@ Gem::Specification.new do |s|
   s.authors = [ "Seth Falcon", "Jeremiah Snapp" ]
   s.email = "support@chef.io"
   s.homepage = "https://github.com/chef/knife-acl"
-  s.require_path = 'lib'
-  s.files = %w(LICENSE README.md) + Dir.glob("lib/**/*")
+  s.require_path = "lib"
+  s.files = %w{LICENSE README.md} + Dir.glob("lib/**/*")
 end
