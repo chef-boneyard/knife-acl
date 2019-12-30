@@ -22,7 +22,7 @@ module OpscodeAcl
     banner "knife acl bulk add MEMBER_TYPE MEMBER_NAME OBJECT_TYPE REGEX PERMS"
 
     deps do
-      require_relative 'acl_base'
+      require_relative "acl_base"
       include OpscodeAcl::AclBase
     end
 
@@ -36,7 +36,7 @@ module OpscodeAcl
         exit 1
       end
 
-      unless %w(client group).include?(member_type)
+      unless %w{client group}.include?(member_type)
         ui.fatal "ERROR: To enforce best practice, knife-acl can only add a client or a group to an ACL."
         ui.fatal "       See the knife-acl README for more information."
         exit 1
@@ -46,7 +46,7 @@ module OpscodeAcl
       validate_object_type!(object_type)
       validate_member_exists!(member_type, member_name)
 
-      if %w(containers groups).include?(object_type)
+      if %w{containers groups}.include?(object_type)
         ui.fatal "bulk modifying the ACL of #{object_type} is not permitted"
         exit 1
       end

@@ -20,28 +20,28 @@
 module OpscodeAcl
   module AclBase
 
-    PERM_TYPES = %w(create read update delete grant) unless defined? PERM_TYPES
-    MEMBER_TYPES = %w(client group user) unless defined? MEMBER_TYPES
-    OBJECT_TYPES = %w(clients containers cookbooks data environments groups nodes roles policies policy_groups) unless defined? OBJECT_TYPES
-    OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/ unless defined? OBJECT_NAME_SPEC
+    PERM_TYPES = %w{create read update delete grant}.freeze unless defined? PERM_TYPES
+    MEMBER_TYPES = %w{client group user}.freeze unless defined? MEMBER_TYPES
+    OBJECT_TYPES = %w{clients containers cookbooks data environments groups nodes roles policies policy_groups}.freeze unless defined? OBJECT_TYPES
+    OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/.freeze unless defined? OBJECT_NAME_SPEC
 
     def validate_object_type!(type)
-      if ! OBJECT_TYPES.include?(type)
-        ui.fatal "Unknown object type \"#{type}\".  The following types are permitted: #{OBJECT_TYPES.join(', ')}"
+      unless OBJECT_TYPES.include?(type)
+        ui.fatal "Unknown object type \"#{type}\".  The following types are permitted: #{OBJECT_TYPES.join(", ")}"
         exit 1
       end
     end
 
     def validate_object_name!(name)
-      if ! OBJECT_NAME_SPEC.match(name)
+      unless OBJECT_NAME_SPEC.match(name)
         ui.fatal "Invalid name: #{name}"
         exit 1
       end
     end
 
     def validate_member_type!(type)
-      if ! MEMBER_TYPES.include?(type)
-        ui.fatal "Unknown member type \"#{type}\". The following types are permitted: #{MEMBER_TYPES.join(', ')}"
+      unless MEMBER_TYPES.include?(type)
+        ui.fatal "Unknown member type \"#{type}\". The following types are permitted: #{MEMBER_TYPES.join(", ")}"
         exit 1
       end
     end
@@ -52,24 +52,22 @@ module OpscodeAcl
     end
 
     def validate_perm_type!(perms)
-      perms.split(',').each do |perm|
-        if ! PERM_TYPES.include?(perm)
-          ui.fatal "Invalid permission \"#{perm}\". The following permissions are permitted: #{PERM_TYPES.join(',')}"
+      perms.split(",").each do |perm|
+        unless PERM_TYPES.include?(perm)
+          ui.fatal "Invalid permission \"#{perm}\". The following permissions are permitted: #{PERM_TYPES.join(",")}"
           exit 1
         end
       end
     end
 
     def validate_member_exists!(member_type, member_name)
-      begin
-        true if rest.get_rest("#{member_type}s/#{member_name}")
-      rescue NameError
-        # ignore "NameError: uninitialized constant Chef::ApiClient" when finding a client
-        true
-      rescue
-        ui.fatal "#{member_type} '#{member_name}' does not exist"
-        exit 1
-      end
+      true if rest.get_rest("#{member_type}s/#{member_name}")
+    rescue NameError
+      # ignore "NameError: uninitialized constant Chef::ApiClient" when finding a client
+      true
+    rescue
+      ui.fatal "#{member_type} '#{member_name}' does not exist"
+      exit 1
     end
 
     def is_usag?(gname)
@@ -86,7 +84,7 @@ module OpscodeAcl
 
     def add_to_acl!(member_type, member_name, object_type, object_name, perms)
       acl = get_acl(object_type, object_name)
-      perms.split(',').each do |perm|
+      perms.split(",").each do |perm|
         ui.msg "Adding '#{member_name}' to '#{perm}' ACE of '#{object_name}'"
         ace = acl[perm]
 
@@ -99,12 +97,14 @@ module OpscodeAcl
           # Older version of chef-server will continue to use 'actors' for a combined list
           # and expect the same in the body.
           key = "#{member_type}s"
-          key = 'actors' unless ace.has_key? key
+          key = "actors" unless ace.key? key
           next if ace[key].include?(member_name)
+
           ace[key] << member_name
         when "group"
-          next if ace['groups'].include?(member_name)
-          ace['groups'] << member_name
+          next if ace["groups"].include?(member_name)
+
+          ace["groups"] << member_name
         end
 
         update_ace!(object_type, object_name, perm, ace)
@@ -113,19 +113,21 @@ module OpscodeAcl
 
     def remove_from_acl!(member_type, member_name, object_type, object_name, perms)
       acl = get_acl(object_type, object_name)
-      perms.split(',').each do |perm|
+      perms.split(",").each do |perm|
         ui.msg "Removing '#{member_name}' from '#{perm}' ACE of '#{object_name}'"
         ace = acl[perm]
 
         case member_type
         when "client", "user"
           key = "#{member_type}s"
-          key = 'actors' unless ace.has_key? key
+          key = "actors" unless ace.key? key
           next unless ace[key].include?(member_name)
+
           ace[key].delete(member_name)
         when "group"
-          next unless ace['groups'].include?(member_name)
-          ace['groups'].delete(member_name)
+          next unless ace["groups"].include?(member_name)
+
+          ace["groups"].delete(member_name)
         end
 
         update_ace!(object_type, object_name, perm, ace)
@@ -140,7 +142,7 @@ module OpscodeAcl
       validate_member_exists!(member_type, member_name)
       existing_group = rest.get_rest("groups/#{group_name}")
       ui.msg "Adding '#{member_name}' to '#{group_name}' group"
-      if !existing_group["#{member_type}s"].include?(member_name)
+      unless existing_group["#{member_type}s"].include?(member_name)
         existing_group["#{member_type}s"] << member_name
         new_group = {
           "groupname" => existing_group["groupname"],
@@ -148,8 +150,8 @@ module OpscodeAcl
           "actors" => {
             "users" => existing_group["users"],
             "clients" => existing_group["clients"],
-            "groups" => existing_group["groups"]
-          }
+            "groups" => existing_group["groups"],
+          },
         }
         rest.put_rest("groups/#{group_name}", new_group)
       end
@@ -167,8 +169,8 @@ module OpscodeAcl
           "actors" => {
             "users" => existing_group["users"],
             "clients" => existing_group["clients"],
-            "groups" => existing_group["groups"]
-          }
+            "groups" => existing_group["groups"],
+          },
         }
         rest.put_rest("groups/#{group_name}", new_group)
       end

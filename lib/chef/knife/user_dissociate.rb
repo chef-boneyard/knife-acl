@@ -19,7 +19,7 @@
 module OpscodeAcl
   class UserDissociate < Chef::Knife
     category "OPSCODE HOSTED CHEF ACCESS CONTROL"
-    banner 'knife user dissociate USERNAMES'
+    banner "knife user dissociate USERNAMES"
 
     def run
       if name_args.length < 1
@@ -28,7 +28,7 @@ module OpscodeAcl
         exit 1
       end
       users = name_args
-      ui.confirm("Are you sure you want to dissociate the following users: #{users.join(', ')}")
+      ui.confirm("Are you sure you want to dissociate the following users: #{users.join(", ")}")
       users.each do |u|
         api_endpoint = "users/#{u}"
         rest.delete_rest(api_endpoint)

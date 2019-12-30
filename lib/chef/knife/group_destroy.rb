@@ -23,7 +23,7 @@ module OpscodeAcl
     banner "knife group destroy GROUP_NAME"
 
     deps do
-      require_relative 'acl_base'
+      require_relative "acl_base"
       include OpscodeAcl::AclBase
     end
 
@@ -38,7 +38,7 @@ module OpscodeAcl
 
       validate_member_name!(group_name)
 
-      if %w(admins billing-admins clients users).include?(group_name.downcase)
+      if %w{admins billing-admins clients users}.include?(group_name.downcase)
         ui.fatal "the '#{group_name}' group is a special group that should not be destroyed"
         exit 1
       end

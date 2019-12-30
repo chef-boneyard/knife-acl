@@ -22,7 +22,7 @@ module OpscodeAcl
     banner "knife acl bulk remove MEMBER_TYPE MEMBER_NAME OBJECT_TYPE REGEX PERMS"
 
     deps do
-      require_relative 'acl_base'
+      require_relative "acl_base"
       include OpscodeAcl::AclBase
     end
 
@@ -36,11 +36,11 @@ module OpscodeAcl
         exit 1
       end
 
-      if member_name == 'pivotal' && %w(client user).include?(member_type)
+      if member_name == "pivotal" && %w{client user}.include?(member_type)
         ui.fatal "ERROR: 'pivotal' is a system user so knife-acl will not remove it from an ACL."
         exit 1
       end
-      if member_name == 'admins' && member_type == 'group' && perms.to_s.split(',').include?('grant')
+      if member_name == "admins" && member_type == "group" && perms.to_s.split(",").include?("grant")
         ui.fatal "ERROR: knife-acl will not remove the 'admins' group from the 'grant' ACE."
         ui.fatal "       Removal could prevent future attempts to modify permissions."
         exit 1
@@ -51,7 +51,7 @@ module OpscodeAcl
       validate_object_type!(object_type)
       validate_member_exists!(member_type, member_name)
 
-      if %w(containers groups).include?(object_type)
+      if %w{containers groups}.include?(object_type)
         ui.fatal "bulk modifying the ACL of #{object_type} is not permitted"
         exit 1
       end
