@@ -1,0 +1,4 @@
+Lint/UselessAssignment:
+  Exclude:
+    - 'lib/chef/knife/acl_bulk_add.rb'
+    - 'lib/chef/knife/acl_bulk_remove.rb'
