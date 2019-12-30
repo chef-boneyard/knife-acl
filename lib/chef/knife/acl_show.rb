@@ -22,7 +22,7 @@ module OpscodeAcl
     banner "knife acl show OBJECT_TYPE OBJECT_NAME"
 
     deps do
-      require 'chef/knife/acl_base'
+      require_relative 'acl_base'
       include OpscodeAcl::AclBase
     end
 
