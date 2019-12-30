@@ -1,15 +1,16 @@
 # knife-acl change log
-<!-- latest_release 1.0.4 -->
-## [v1.0.4](https://github.com/chef/knife-acl/tree/v1.0.4) (2019-12-30)
+<!-- latest_release 1.0.5 -->
+## [v1.0.5](https://github.com/chef/knife-acl/tree/v1.0.5) (2019-12-30)
 
 #### Merged Pull Requests
-- Use require_relative instead of require [#47](https://github.com/chef/knife-acl/pull/47) ([tas50](https://github.com/tas50))
+- Chefstyle fixes [#49](https://github.com/chef/knife-acl/pull/49) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=1.0.3 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Chefstyle fixes [#49](https://github.com/chef/knife-acl/pull/49) ([tas50](https://github.com/tas50)) <!-- 1.0.5 -->
 - Use require_relative instead of require [#47](https://github.com/chef/knife-acl/pull/47) ([tas50](https://github.com/tas50)) <!-- 1.0.4 -->
 - Use Expeditor / Buildkite to manage this repo [#48](https://github.com/chef/knife-acl/pull/48) ([tas50](https://github.com/tas50)) <!-- 1.0.3 -->
 <!-- release_rollup -->
