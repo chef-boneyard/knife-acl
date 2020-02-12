@@ -1,6 +1,6 @@
 # knife-acl change log
-<!-- latest_release 1.0.7 -->
-## [v1.0.7](https://github.com/chef/knife-acl/tree/v1.0.7) (2020-02-12)
+<!-- latest_release 1.0.8 -->
+## [v1.0.8](https://github.com/chef/knife-acl/tree/v1.0.8) (2020-02-12)
 
 #### Merged Pull Requests
 - Move helpers to their own dir to speedup loading [#51](https://github.com/chef/knife-acl/pull/51) ([tas50](https://github.com/tas50))
