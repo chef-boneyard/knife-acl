@@ -1,6 +1,6 @@
 #
 # Author:: Jeremiah Snapp (jeremiah@chef.io)
-# Copyright:: Copyright 2011-2016 Chef Software, Inc.
+# Copyright:: Copyright 2011-2020 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ module OpscodeAcl
     banner "knife acl bulk add MEMBER_TYPE MEMBER_NAME OBJECT_TYPE REGEX PERMS"
 
     deps do
-      require_relative "acl_base"
+      require_relative "helpers/acl_base"
       include OpscodeAcl::AclBase
     end
 
