@@ -1,8 +1,16 @@
 # knife-acl change log
-<!-- latest_release -->
+<!-- latest_release 1.0.7 -->
+## [v1.0.7](https://github.com/chef/knife-acl/tree/v1.0.7) (2020-02-12)
+
+#### Merged Pull Requests
+- Move helpers to their own dir to speedup loading [#51](https://github.com/chef/knife-acl/pull/51) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=1.0.6 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Move helpers to their own dir to speedup loading [#51](https://github.com/chef/knife-acl/pull/51) ([tas50](https://github.com/tas50)) <!-- 1.0.7 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
