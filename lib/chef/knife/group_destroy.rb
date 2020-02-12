@@ -1,7 +1,7 @@
 #
 # Author:: Christopher Maier (<cm@chef.io>)
 # Author:: Jeremiah Snapp (<jeremiah@chef.io>)
-# Copyright:: Copyright 2015-2016 Chef Software, Inc.
+# Copyright:: Copyright 2015-2020 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ module OpscodeAcl
     banner "knife group destroy GROUP_NAME"
 
     deps do
-      require_relative "acl_base"
+      require_relative "helpers/acl_base"
       include OpscodeAcl::AclBase
     end
 
