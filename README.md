@@ -1,5 +1,7 @@
 # knife-acl
 
+WARNING: This plugin was moved directly into Chef Infra Client in 16.0. This repo is no longer maintained.
+
 * **Umbrella Project: [Knife](https://github.com/chef/chef-oss-practices/blob/master/projects/knife.md)**
 
 * **Project State [Deprecated](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md#deprecated)**
